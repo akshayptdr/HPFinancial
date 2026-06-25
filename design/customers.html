@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customers · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="customers" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb">Home · Customers</div><h1>Customers</h1></div>
+          <div class="page-head__actions">
+            <button class="btn btn--light">Export</button>
+            <a href="customer-profile.html" class="btn btn--primary"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>New Customer</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__body" style="padding-bottom:0">
+            <div class="filter-bar">
+              <div class="topbar__search" style="max-width:260px">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="position:absolute;left:11px;top:10px;width:17px;color:var(--n-400)"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+                <input type="text" placeholder="Search by name, firm, GST, mobile…">
+              </div>
+              <div class="select-wrap"><select class="select"><option>All Services</option><option>Income Tax</option><option>GST</option><option>Insurance</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Assignees</option><option>Anita</option><option>Vikram</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Locations</option><option>Indore</option><option>Bhopal</option></select></div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Customer / Firm</th><th>Mobile</th><th>GST No.</th><th>Services</th><th>Pending Fees</th><th>Assignee</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="cell-strong">Patel Traders</div><div class="cell-sub">Suresh Patel · Indore</div></td>
+                  <td class="mono">98765 43210</td><td class="mono">23ABCDE1234F1Z5</td>
+                  <td><span class="tag">GST</span> <span class="tag">Income Tax</span> <span class="tag">+1</span></td>
+                  <td class="mono" style="color:var(--danger);font-weight:600">₹8,500</td>
+                  <td><span class="avatar-sm">AN</span></td>
+                  <td class="text-right"><a href="customer-profile.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Sharma &amp; Co</div><div class="cell-sub">Vijay Sharma · Bhopal</div></td>
+                  <td class="mono">99820 11223</td><td class="mono">23PQRSX9876K1Z2</td>
+                  <td><span class="tag">Income Tax</span> <span class="tag">Accounting</span></td>
+                  <td class="mono" style="color:var(--success);font-weight:600">₹0</td>
+                  <td><span class="avatar-sm">VK</span></td>
+                  <td class="text-right"><a href="customer-profile.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Green Agro LLP</div><div class="cell-sub">Neha Verma · Dewas</div></td>
+                  <td class="mono">90011 55667</td><td class="mono">23LMNOP4567Q1Z8</td>
+                  <td><span class="tag">GST</span> <span class="tag">Loan</span> <span class="tag">+2</span></td>
+                  <td class="mono" style="color:var(--danger);font-weight:600">₹14,200</td>
+                  <td><span class="avatar-sm">AN</span></td>
+                  <td class="text-right"><a href="customer-profile.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Mehta Foods Pvt Ltd</div><div class="cell-sub">Karan Mehta · Indore</div></td>
+                  <td class="mono">98112 33445</td><td class="mono">23GHIJK7788L1Z0</td>
+                  <td><span class="tag">Accounting</span> <span class="tag">Company Comp.</span></td>
+                  <td class="mono" style="color:var(--success);font-weight:600">₹0</td>
+                  <td><span class="avatar-sm">RS</span></td>
+                  <td class="text-right"><a href="customer-profile.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card__body flex between items-center" style="border-top:1px solid var(--border)">
+            <span class="muted small">Showing 1–4 of 342 customers</span>
+            <div class="flex gap-8">
+              <button class="btn btn--light btn--sm">Prev</button>
+              <button class="btn btn--primary btn--sm">1</button>
+              <button class="btn btn--light btn--sm">2</button>
+              <button class="btn btn--light btn--sm">Next</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roles &amp; Access · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+<style>.chk{width:18px;height:18px;accent-color:var(--primary);} .perm td:first-child{font-weight:500;}</style>
+</head>
+<body data-page="roles" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content" style="max-width:860px">
+
+        <div class="page-head">
+          <div><div class="crumb">Administration · Roles &amp; Access</div><h1>Roles &amp; Permissions</h1></div>
+          <div class="page-head__actions"><button class="btn btn--primary">Save Changes</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><h3>Permission Matrix</h3><span class="muted small">Toggle what each role can do</span></div>
+          <div class="table-wrap">
+            <table class="tbl perm">
+              <thead><tr><th>Permission</th><th class="text-center" style="text-align:center">Admin</th><th class="text-center" style="text-align:center">Employee</th></tr></thead>
+              <tbody>
+                <tr><td>View &amp; manage employees</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox"></td></tr>
+                <tr><td>Manage roles &amp; settings</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox"></td></tr>
+                <tr><td>Manage masters (services, statuses)</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox"></td></tr>
+                <tr><td>View / create / edit leads</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox" checked></td></tr>
+                <tr><td>View / create / edit customers</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox" checked></td></tr>
+                <tr><td>View / edit service jobs</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox" checked></td></tr>
+                <tr><td>Record fee payments</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox" checked></td></tr>
+                <tr><td>View reports</td><td style="text-align:center"><input class="chk" type="checkbox" checked disabled></td><td style="text-align:center"><input class="chk" type="checkbox" checked></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card__body">
+            <div class="muted small">Note: Employees only see records assigned to them (row-level scoping). Admin permissions are fixed.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

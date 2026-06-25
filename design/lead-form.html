@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New Lead · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="leads" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content" style="max-width:900px">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="leads.html">Leads</a> · New</div><h1>Add New Lead</h1></div>
+          <div class="page-head__actions"><a href="leads.html" class="btn btn--ghost">Cancel</a></div>
+        </div>
+
+        <div class="card">
+          <div class="card__body">
+            <div class="form-grid">
+              <div class="field"><label>Lead Type <span class="req">*</span></label>
+                <div class="select-wrap"><select class="select"><option>Referral</option><option>Social Media</option><option>Walk-in</option><option>Phone Call</option></select></div>
+              </div>
+              <div class="field"><label>Interested Category <span class="req">*</span></label>
+                <div class="select-wrap"><select class="select"><option>Income Tax</option><option>GST</option><option>Accounting</option><option>Loan &amp; Subsidy</option><option>Mutual Fund</option><option>Insurance</option><option>Government Department</option><option>Certificate</option><option>Deeds &amp; Agreement</option><option>Company Compliances</option></select></div>
+              </div>
+              <div class="field"><label>Full Name <span class="req">*</span></label><input class="input" placeholder="e.g. Rajesh Kumar"></div>
+              <div class="field"><label>Mobile Number <span class="req">*</span></label><input class="input" type="tel" placeholder="10-digit mobile"><div class="hint">Used as the primary contact.</div></div>
+              <div class="field"><label>Contact Person</label><input class="input" placeholder="If different from above"></div>
+              <div class="field"><label>Follow-up Date</label><input class="input" type="date"><div class="hint">Optional — drives reminders.</div></div>
+            </div>
+
+            <div class="divider"></div>
+            <h3 style="font-size:15px;margin-bottom:14px">Location</h3>
+            <div class="form-grid form-grid--3">
+              <div class="field"><label>State</label>
+                <div class="select-wrap"><select class="select"><option>Madhya Pradesh</option><option>Maharashtra</option><option>Gujarat</option></select></div>
+              </div>
+              <div class="field"><label>District</label>
+                <div class="select-wrap"><select class="select"><option>Indore</option><option>Bhopal</option><option>Ujjain</option></select></div>
+              </div>
+              <div class="field"><label>Tehsil</label><input class="input" placeholder="Tehsil"></div>
+              <div class="field col-span-2" style="grid-column:span 1"><label>Village</label><input class="input" placeholder="Village"></div>
+            </div>
+
+            <div class="field"><label>Notes</label><textarea class="input" rows="3" placeholder="Any additional details about this lead…"></textarea></div>
+
+            <div class="flex between items-center" style="margin-top:8px">
+              <span class="muted small"><span class="req">*</span> Required fields</span>
+              <div class="flex gap-12">
+                <a href="leads.html" class="btn btn--light">Cancel</a>
+                <a href="lead-detail.html" class="btn btn--primary">Save Lead</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

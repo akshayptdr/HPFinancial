@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fees / Collection Report · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="reports" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="reports.html">Reports</a> · Fees / Collection</div><h1>Fees / Collection Report</h1></div>
+          <div class="page-head__actions">
+            <button class="btn btn--light"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Export CSV</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px"><div class="card__body">
+          <div class="filter-bar" style="margin-bottom:0">
+            <input class="input" type="date" style="width:auto" value="2026-06-01">
+            <span class="muted">to</span>
+            <input class="input" type="date" style="width:auto" value="2026-06-30">
+            <div class="select-wrap"><select class="select"><option>All Services</option><option>GST</option><option>Income Tax</option></select></div>
+            <div class="select-wrap"><select class="select"><option>All Modes</option><option>Cash</option><option>Bank</option></select></div>
+            <div class="select-wrap"><select class="select"><option>All Employees</option></select></div>
+            <button class="btn btn--primary btn--sm" style="margin-left:auto">Apply</button>
+          </div>
+        </div></div>
+
+        <div class="grid grid--4" style="margin-bottom:18px">
+          <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:24px">₹6.18L</div><div class="stat__label">Total Billed</div></div>
+          <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:24px;color:var(--success)">₹4.82L</div><div class="stat__label">Collected</div></div>
+          <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:24px;color:var(--danger)">₹1.36L</div><div class="stat__label">Outstanding</div></div>
+          <div class="stat" style="padding:16px"><div class="stat__val" style="font-size:24px">78%</div><div class="stat__label">Collection Rate</div></div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1fr 1.6fr">
+          <div class="card">
+            <div class="card__head"><h3>By Payment Mode</h3></div>
+            <div class="card__body" style="text-align:center">
+              <svg viewBox="0 0 180 180" width="160" height="160">
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--c3)" stroke-width="28" stroke-dasharray="290 150" transform="rotate(-90 90 90)"/>
+                <circle cx="90" cy="90" r="70" fill="none" stroke="var(--c1)" stroke-width="28" stroke-dasharray="150 290" stroke-dashoffset="-290" transform="rotate(-90 90 90)"/>
+                <text x="90" y="88" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">₹4.82L</text>
+                <text x="90" y="106" text-anchor="middle" font-size="11" fill="#64748b">collected</text>
+              </svg>
+              <div class="legend" style="justify-content:center;margin-top:12px">
+                <span><i style="background:var(--c3)"></i>Cash ₹3.16L</span><span><i style="background:var(--c1)"></i>Bank ₹1.66L</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__head"><h3>Collection by Service</h3></div>
+            <div class="table-wrap">
+              <table class="tbl">
+                <thead><tr><th>Service</th><th>Billed</th><th>Collected</th><th>Outstanding</th><th>Rate</th></tr></thead>
+                <tbody>
+                  <tr><td class="cell-strong">GST</td><td class="mono">₹2.10L</td><td class="mono">₹1.78L</td><td class="mono" style="color:var(--danger)">₹32,000</td><td><span class="pill pill--green">85%</span></td></tr>
+                  <tr><td class="cell-strong">Income Tax</td><td class="mono">₹1.92L</td><td class="mono">₹1.40L</td><td class="mono" style="color:var(--danger)">₹52,000</td><td><span class="pill pill--amber">73%</span></td></tr>
+                  <tr><td class="cell-strong">Accounting</td><td class="mono">₹1.05L</td><td class="mono">₹92,000</td><td class="mono" style="color:var(--danger)">₹13,000</td><td><span class="pill pill--green">88%</span></td></tr>
+                  <tr><td class="cell-strong">Insurance</td><td class="mono">₹68,000</td><td class="mono">₹44,000</td><td class="mono" style="color:var(--danger)">₹24,000</td><td><span class="pill pill--amber">65%</span></td></tr>
+                  <tr><td class="cell-strong">Others</td><td class="mono">₹43,000</td><td class="mono">₹28,000</td><td class="mono" style="color:var(--danger)">₹15,000</td><td><span class="pill pill--amber">65%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

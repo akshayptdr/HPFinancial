@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Employees · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="employees" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb">Administration · Employees</div><h1>Employees</h1></div>
+          <div class="page-head__actions"><button class="btn btn--primary" onclick="document.getElementById('add').style.display='grid'"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Add Employee</button></div>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Name</th><th>Mobile (login)</th><th>Type</th><th>Last Login</th><th>Status</th><th class="text-right">Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="flex items-center gap-12"><span class="avatar-sm">RS</span><div><div class="cell-strong">Rahul Shah</div><div class="cell-sub">rahul@firm.com</div></div></td>
+                  <td class="mono">98765 00001</td><td><span class="pill pill--blue">Admin</span></td><td class="cell-sub">Today, 9:12 AM</td>
+                  <td><span class="pill pill--green">Active</span></td>
+                  <td class="text-right"><button class="btn btn--light btn--sm">Edit</button> <button class="btn btn--light btn--sm">Reset PW</button></td>
+                </tr>
+                <tr>
+                  <td class="flex items-center gap-12"><span class="avatar-sm">AN</span><div><div class="cell-strong">Anita Sharma</div><div class="cell-sub">anita@firm.com</div></div></td>
+                  <td class="mono">98765 00002</td><td><span class="pill pill--gray">Employee</span></td><td class="cell-sub">Today, 8:40 AM</td>
+                  <td><span class="pill pill--green">Active</span></td>
+                  <td class="text-right"><button class="btn btn--light btn--sm">Edit</button> <button class="btn btn--light btn--sm">Reset PW</button></td>
+                </tr>
+                <tr>
+                  <td class="flex items-center gap-12"><span class="avatar-sm">VK</span><div><div class="cell-strong">Vikram Singh</div><div class="cell-sub">vikram@firm.com</div></div></td>
+                  <td class="mono">98765 00003</td><td><span class="pill pill--gray">Employee</span></td><td class="cell-sub">Yesterday</td>
+                  <td><span class="pill pill--green">Active</span></td>
+                  <td class="text-right"><button class="btn btn--light btn--sm">Edit</button> <button class="btn btn--light btn--sm">Reset PW</button></td>
+                </tr>
+                <tr>
+                  <td class="flex items-center gap-12"><span class="avatar-sm">PD</span><div><div class="cell-strong">Pankaj Dubey</div><div class="cell-sub">—</div></div></td>
+                  <td class="mono">98765 00004</td><td><span class="pill pill--gray">Employee</span></td><td class="cell-sub">12 Jun 2026</td>
+                  <td><span class="pill pill--red">Inactive</span></td>
+                  <td class="text-right"><button class="btn btn--light btn--sm">Edit</button> <button class="btn btn--light btn--sm">Activate</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add employee modal with generated password reveal -->
+<div class="modal-backdrop" id="add" style="display:none">
+  <div class="modal">
+    <div class="modal__head"><h3>Add Employee</h3><button class="icon-btn" onclick="document.getElementById('add').style.display='none'">✕</button></div>
+    <div class="modal__body">
+      <div class="form-grid">
+        <div class="field col-span-2" style="grid-column:span 2"><label>Full Name <span class="req">*</span></label><input class="input" placeholder="e.g. Anita Sharma"></div>
+        <div class="field"><label>Mobile (login) <span class="req">*</span></label><input class="input" type="tel" placeholder="10-digit"></div>
+        <div class="field"><label>Email</label><input class="input" placeholder="optional"></div>
+        <div class="field"><label>Employee Type <span class="req">*</span></label>
+          <div class="flex gap-8"><label class="chip-check"><input type="radio" name="ty"> Admin</label><label class="chip-check on"><input type="radio" name="ty" checked> Employee</label></div>
+        </div>
+        <div class="field"><label>Status</label>
+          <div class="flex gap-8"><label class="chip-check on"><input type="radio" name="ss" checked> Active</label><label class="chip-check"><input type="radio" name="ss"> Inactive</label></div>
+        </div>
+      </div>
+      <div style="background:var(--success-bg);border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-top:6px">
+        <div class="small" style="color:var(--success-fg);font-weight:600;margin-bottom:6px">🔑 A temporary password will be generated</div>
+        <div class="flex between items-center"><code class="mono" style="font-size:16px;font-weight:700;letter-spacing:1px">Hpf-7K2m9Q</code><button class="btn btn--light btn--sm">Copy</button></div>
+        <div class="muted small" style="margin-top:6px">Share with the employee. They must change it on first login.</div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--light" onclick="document.getElementById('add').style.display='none'">Cancel</button>
+      <button class="btn btn--primary" onclick="document.getElementById('add').style.display='none'">Create Employee</button>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leads · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="leads" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb">Home · Leads</div><h1>Leads</h1></div>
+          <div class="page-head__actions">
+            <button class="btn btn--light"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Export</button>
+            <a href="lead-form.html" class="btn btn--primary"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>New Lead</a>
+          </div>
+        </div>
+
+        <!-- mini stats -->
+        <div class="grid grid--4" style="margin-bottom:18px">
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:22px">38</div><div class="stat__label">New</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:22px">28</div><div class="stat__label">Contacted</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:22px">22</div><div class="stat__label">Qualified</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:22px">39%</div><div class="stat__label">Conversion rate</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card__body" style="padding-bottom:0">
+            <div class="filter-bar">
+              <div class="topbar__search" style="max-width:260px">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="position:absolute;left:11px;top:10px;width:17px;color:var(--n-400)"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+                <input type="text" placeholder="Search leads…">
+              </div>
+              <div class="select-wrap"><select class="select"><option>All Types</option><option>Referral</option><option>Social Media</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Categories</option><option>Income Tax</option><option>GST</option><option>Insurance</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Status</option><option>New</option><option>Contacted</option><option>Qualified</option><option>Won</option><option>Lost</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Assignees</option><option>Anita</option><option>Vikram</option></select></div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Name</th><th>Mobile</th><th>Type</th><th>Interested In</th><th>Location</th><th>Follow-up</th><th>Assignee</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="cell-strong">Rajesh Kumar</td><td class="mono">98765 43210</td>
+                  <td><span class="tag">Referral</span></td><td>Income Tax</td>
+                  <td>Indore, MP</td><td><span class="pill pill--red">Today</span></td>
+                  <td><span class="avatar-sm">AN</span></td><td><span class="pill pill--blue">New</span></td>
+                  <td class="text-right"><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td class="cell-strong">Sunita Devi</td><td class="mono">99820 11223</td>
+                  <td><span class="tag">Social Media</span></td><td>Loan &amp; Subsidy</td>
+                  <td>Dewas, MP</td><td><span class="pill pill--amber">Tomorrow</span></td>
+                  <td><span class="avatar-sm">VK</span></td><td><span class="pill pill--sky">Contacted</span></td>
+                  <td class="text-right"><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td class="cell-strong">Amit Joshi</td><td class="mono">90011 55667</td>
+                  <td><span class="tag">Referral</span></td><td>Insurance</td>
+                  <td>Ujjain, MP</td><td>12 Jul 2026</td>
+                  <td><span class="avatar-sm">AN</span></td><td><span class="pill pill--amber">Qualified</span></td>
+                  <td class="text-right"><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td class="cell-strong">Pooja Nair</td><td class="mono">98112 33445</td>
+                  <td><span class="tag">Walk-in</span></td><td>GST</td>
+                  <td>Indore, MP</td><td>—</td>
+                  <td><span class="avatar-sm">RS</span></td><td><span class="pill pill--green">Won</span></td>
+                  <td class="text-right"><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+                <tr>
+                  <td class="cell-strong">Karan Mehta</td><td class="mono">97000 88776</td>
+                  <td><span class="tag">Social Media</span></td><td>Mutual Fund</td>
+                  <td>Bhopal, MP</td><td>—</td>
+                  <td><span class="avatar-sm">VK</span></td><td><span class="pill pill--gray">Lost</span></td>
+                  <td class="text-right"><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card__body flex between items-center" style="border-top:1px solid var(--border)">
+            <span class="muted small">Showing 1–5 of 128 leads</span>
+            <div class="flex gap-8">
+              <button class="btn btn--light btn--sm">Prev</button>
+              <button class="btn btn--primary btn--sm">1</button>
+              <button class="btn btn--light btn--sm">2</button>
+              <button class="btn btn--light btn--sm">3</button>
+              <button class="btn btn--light btn--sm">Next</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

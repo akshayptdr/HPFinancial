@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Income Tax Job · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="customers" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="customers.html">Customers</a> · <a href="customer-profile.html">Patel Traders</a> · Income Tax</div>
+            <h1>Income Tax Job</h1></div>
+          <div class="page-head__actions"><a href="customer-profile.html" class="btn btn--ghost">Back to profile</a></div>
+        </div>
+
+        <div class="shared-box">
+          <div class="shared-box__title">Customer (read-only)</div>
+          <div class="shared-grid">
+            <div><div class="k">Firm Name</div><div class="v">Patel Traders</div></div>
+            <div><div class="k">PAN</div><div class="v mono">ABCDE1234F</div></div>
+            <div><div class="k">GST Number</div><div class="v mono">23ABCDE1234F1Z5</div></div>
+            <div><div class="k">Aadhaar</div><div class="v mono">XXXX XXXX 4321</div></div>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1.5fr 1fr">
+          <!-- form -->
+          <div class="card">
+            <div class="card__head"><h3>Job Details</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Sub-type <span class="req">*</span></label>
+                <div class="flex gap-8" style="flex-wrap:wrap">
+                  <label class="chip-check on"><input type="radio" name="st" checked> ITR</label>
+                  <label class="chip-check"><input type="radio" name="st"> TDS</label>
+                  <label class="chip-check"><input type="radio" name="st"> Audit</label>
+                  <label class="chip-check"><input type="radio" name="st"> Other</label>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <!-- TDS-only field, shown conditionally -->
+                <div class="field" style="opacity:.5">
+                  <label>Form Type <span class="muted small">(TDS only)</span></label>
+                  <div class="select-wrap"><select class="select" disabled><option>24Q</option><option>26Q</option></select></div>
+                </div>
+                <div class="field"><label>Financial Year <span class="req">*</span></label>
+                  <div class="select-wrap"><select class="select"><option>AY 2026-27</option><option>AY 2025-26</option></select></div>
+                </div>
+                <div class="field"><label>Due Date of Filing</label><input class="input" type="date" value="2026-07-31"></div>
+                <div class="field"><label>File Status</label>
+                  <div class="select-wrap"><select class="select"><option>Pending</option><option>In-Progress</option><option>Filed</option><option>Completed</option></select></div>
+                </div>
+              </div>
+              <div class="field"><label>Comment</label><textarea class="input" rows="3" placeholder="Notes about this filing…"></textarea></div>
+
+              <div class="flex between items-center" style="margin-top:6px">
+                <span class="muted small">Sub-type fields adjust automatically.</span>
+                <div class="flex gap-12"><a href="customer-profile.html" class="btn btn--light">Cancel</a><button class="btn btn--primary">Save Job</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- fees panel (shared) -->
+          <div class="card" style="align-self:start">
+            <div class="card__head"><h3>Fees &amp; Payments</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Agreed Fee (₹)</label><input class="input mono" value="3,500"></div>
+              <div class="kpi-row" style="background:var(--n-50);border-radius:10px;padding:14px;margin-bottom:16px">
+                <div class="kpi"><div class="v mono" style="color:var(--success)">₹0</div><div class="l">Received</div></div>
+                <div class="kpi"><div class="v mono" style="color:var(--danger)">₹3,500</div><div class="l">Balance</div></div>
+              </div>
+              <div class="flex between items-center" style="margin-bottom:8px">
+                <b style="font-size:13px">Payment Receipts</b>
+                <button class="btn btn--primary btn--sm" onclick="document.getElementById('pay').style.display='grid'">+ Record Payment</button>
+              </div>
+              <div class="empty" style="padding:26px 10px">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.32c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                <div>No payments recorded yet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Record payment modal (shared fees engine) -->
+<div class="modal-backdrop" id="pay" style="display:none">
+  <div class="modal">
+    <div class="modal__head"><h3>Record Payment</h3><button class="icon-btn" onclick="document.getElementById('pay').style.display='none'">✕</button></div>
+    <div class="modal__body">
+      <div class="form-grid">
+        <div class="field"><label>Amount (₹) <span class="req">*</span></label><input class="input mono" placeholder="0.00"></div>
+        <div class="field"><label>Payment Mode <span class="req">*</span></label>
+          <div class="flex gap-8">
+            <label class="chip-check on"><input type="radio" name="pm" checked> Cash</label>
+            <label class="chip-check"><input type="radio" name="pm"> Bank</label>
+          </div>
+        </div>
+        <div class="field"><label>Received Date <span class="req">*</span></label><input class="input" type="date" value="2026-06-25"></div>
+        <div class="field"><label>Recorded By</label><input class="input input--readonly" value="Rahul Shah (auto)" readonly></div>
+      </div>
+      <div class="field col-span-2"><label>Remarks</label><input class="input" placeholder="e.g. advance / final settlement"></div>
+      <p class="muted small">This receipt is logged with your name &amp; timestamp in the audit trail.</p>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--light" onclick="document.getElementById('pay').style.display='none'">Cancel</button>
+      <button class="btn btn--primary" onclick="document.getElementById('pay').style.display='none'">Save Receipt</button>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

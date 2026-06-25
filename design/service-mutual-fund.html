@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mutual Fund Job · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="customers" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="customers.html">Customers</a> · <a href="customer-profile.html">Patel Traders</a> · Mutual Fund</div>
+            <h1>Mutual Fund Job</h1></div>
+          <div class="page-head__actions"><a href="customer-profile.html" class="btn btn--ghost">Back to profile</a></div>
+        </div>
+
+        <div class="shared-box">
+          <div class="shared-box__title">Customer (read-only)</div>
+          <div class="shared-grid">
+            <div><div class="k">Firm Name</div><div class="v">Patel Traders</div></div>
+            <div><div class="k">PAN</div><div class="v mono">ABCDE1234F</div></div>
+            <div><div class="k">GST Number</div><div class="v mono">23ABCDE1234F1Z5</div></div>
+            <div><div class="k">Aadhaar</div><div class="v mono">XXXX XXXX 4321</div></div>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1.5fr 1fr">
+          <div class="card">
+            <div class="card__head"><h3>Job Details</h3></div>
+            <div class="card__body">
+              <div class="form-grid">
+                <div class="field"><label>Account Open?</label>
+                  <div class="flex gap-8"><label class="chip-check on"><input type="radio" name="ao" checked> Yes</label><label class="chip-check"><input type="radio" name="ao"> No</label></div>
+                </div>
+                <div class="field"><label>UCC Number <span class="muted small">(if account open)</span></label><input class="input mono" placeholder="UCC…"></div>
+                <div class="field"><label>Due Date</label><input class="input" type="date"></div>
+                <div class="field"><label>File Status</label><div class="select-wrap"><select class="select"><option>Pending</option><option>In-Progress</option><option>Completed</option></select></div></div>
+              </div>
+
+              <div class="divider"></div>
+              <div class="flex between items-center" style="margin-bottom:10px">
+                <b style="font-size:14px">Investments</b>
+                <span class="muted small">Add SIP / Lump Sum / Transfer with targets</span>
+              </div>
+              <table class="tbl" style="margin-bottom:12px">
+                <thead><tr><th>Type</th><th>Target (₹)</th><th>Achieved (₹)</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><span class="tag">SIP</span></td><td><input class="input mono" value="5,000" style="height:34px"></td><td><input class="input mono" value="3,000" style="height:34px"></td><td class="text-right"><button class="btn btn--ghost btn--icon">✕</button></td></tr>
+                  <tr><td><span class="tag">Lump Sum</span></td><td><input class="input mono" value="50,000" style="height:34px"></td><td><input class="input mono" value="50,000" style="height:34px"></td><td class="text-right"><button class="btn btn--ghost btn--icon">✕</button></td></tr>
+                </tbody>
+              </table>
+              <div class="flex gap-8">
+                <button class="btn btn--light btn--sm">+ SIP</button>
+                <button class="btn btn--light btn--sm">+ Lump Sum</button>
+                <button class="btn btn--light btn--sm">+ Transfer</button>
+              </div>
+
+              <div class="field" style="margin-top:16px"><label>Comment</label><textarea class="input" rows="2"></textarea></div>
+              <div class="flex between items-center"><span class="muted small">Each investment type captures target &amp; achieved amounts.</span>
+                <div class="flex gap-12"><a href="customer-profile.html" class="btn btn--light">Cancel</a><button class="btn btn--primary">Save Job</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="align-self:start">
+            <div class="card__head"><h3>Fees &amp; Payments</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Agreed Fee (₹)</label><input class="input mono" value="1,500"></div>
+              <div class="kpi-row" style="background:var(--n-50);border-radius:10px;padding:14px">
+                <div class="kpi"><div class="v mono" style="color:var(--success)">₹1,500</div><div class="l">Received</div></div>
+                <div class="kpi"><div class="v mono" style="color:var(--success)">₹0</div><div class="l">Balance</div></div>
+              </div>
+              <button class="btn btn--primary btn--sm w-full" style="margin-top:14px">+ Record Payment</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

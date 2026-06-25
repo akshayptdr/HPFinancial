@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patel Traders · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="customers" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="customers.html">Customers</a> · Patel Traders</div>
+            <h1 class="flex items-center gap-12">Patel Traders <span class="pill pill--green">Active</span></h1>
+            <div class="muted" style="margin-top:4px">Proprietor: Suresh Patel · Village Rau, Indore, MP</div>
+          </div>
+          <div class="page-head__actions">
+            <button class="btn btn--light">Edit Profile</button>
+            <button class="btn btn--primary" onclick="document.getElementById('m').style.display='grid'">Manage Services</button>
+          </div>
+        </div>
+
+        <!-- SHARED capture-once fields (read-only everywhere) -->
+        <div class="shared-box">
+          <div class="shared-box__title"><svg viewBox="0 0 24 24" width="13" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> Shared Profile Fields · used across all services (edit on profile only)</div>
+          <div class="shared-grid">
+            <div><div class="k">Firm Name</div><div class="v">Patel Traders</div></div>
+            <div><div class="k">GST Number</div><div class="v mono">23ABCDE1234F1Z5</div></div>
+            <div><div class="k">PAN</div><div class="v mono">ABCDE1234F</div></div>
+            <div><div class="k">Aadhaar</div><div class="v mono">XXXX XXXX 4321</div></div>
+          </div>
+        </div>
+
+        <!-- tabs -->
+        <div class="tabs">
+          <div class="tab">Profile</div>
+          <div class="tab">Documents <span class="tag" style="margin-left:4px">4</span></div>
+          <div class="tab active">Services <span class="tag" style="margin-left:4px">3</span></div>
+        </div>
+
+        <!-- summary tiles -->
+        <div class="grid grid--4" style="margin-bottom:18px">
+          <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px">₹42,000</div><div class="stat__label">Total Billed</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--success)">₹33,500</div><div class="stat__label">Received</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--danger)">₹8,500</div><div class="stat__label">Outstanding</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:20px">2</div><div class="stat__label">Overdue Jobs</div></div>
+        </div>
+
+        <!-- Service: GST -->
+        <div class="card" style="margin-bottom:18px">
+          <div class="card__head">
+            <h3 class="flex items-center gap-8"><span class="stat__icon bg-blue" style="width:30px;height:30px;margin:0;border-radius:8px"><svg viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z"/></svg></span> GST</h3>
+            <a href="service-gst.html" class="btn btn--primary btn--sm">+ Add GST Job</a>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Category / Return</th><th>Period</th><th>Due</th><th>Status</th><th>Fee</th><th>Received</th><th>Balance</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="cell-strong">Returns · GSTR-3B</td><td class="mono">Jun-2026</td><td><span class="pill pill--red">2 days ago</span></td><td><span class="pill pill--amber">In-Progress</span></td><td class="mono">₹2,000</td><td class="mono">₹1,000</td><td class="mono" style="color:var(--danger)">₹1,000</td><td class="text-right"><a href="service-gst.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">Returns · GSTR-1</td><td class="mono">Jun-2026</td><td><span class="pill pill--amber">In 2 days</span></td><td><span class="pill pill--gray">Pending</span></td><td class="mono">₹1,500</td><td class="mono">₹0</td><td class="mono" style="color:var(--danger)">₹1,500</td><td class="text-right"><a href="service-gst.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">Registration</td><td class="mono">—</td><td>—</td><td><span class="pill pill--green">Completed</span></td><td class="mono">₹3,000</td><td class="mono">₹3,000</td><td class="mono" style="color:var(--success)">₹0</td><td class="text-right"><a href="service-gst.html" class="btn btn--light btn--sm">Open</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Service: Income Tax -->
+        <div class="card" style="margin-bottom:18px">
+          <div class="card__head">
+            <h3 class="flex items-center gap-8"><span class="stat__icon bg-green" style="width:30px;height:30px;margin:0;border-radius:8px"><svg viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.32c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span> Income Tax</h3>
+            <a href="service-income-tax.html" class="btn btn--primary btn--sm">+ Add IT Job</a>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Sub-type</th><th>Financial Year</th><th>Due</th><th>Status</th><th>Fee</th><th>Received</th><th>Balance</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="cell-strong">ITR</td><td class="mono">AY 2026-27</td><td><span class="pill pill--amber">31 Jul 2026</span></td><td><span class="pill pill--gray">Pending</span></td><td class="mono">₹3,500</td><td class="mono">₹0</td><td class="mono" style="color:var(--danger)">₹3,500</td><td class="text-right"><a href="service-income-tax.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">TDS · 26Q</td><td class="mono">Q1 26-27</td><td><span class="pill pill--green">Filed</span></td><td><span class="pill pill--green">Completed</span></td><td class="mono">₹2,500</td><td class="mono">₹2,500</td><td class="mono" style="color:var(--success)">₹0</td><td class="text-right"><a href="service-income-tax.html" class="btn btn--light btn--sm">Open</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Service: Insurance -->
+        <div class="card">
+          <div class="card__head">
+            <h3 class="flex items-center gap-8"><span class="stat__icon bg-rose" style="width:30px;height:30px;margin:0;border-radius:8px"><svg viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></span> Insurance</h3>
+            <a href="service-insurance.html" class="btn btn--primary btn--sm">+ Add Insurance Job</a>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Type(s)</th><th>Company</th><th>Policy</th><th>Status</th><th>Fee</th><th>Received</th><th>Balance</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><span class="tag">Health</span> <span class="tag">Term</span></td><td>LIC</td><td><span class="pill pill--blue">Fresh</span></td><td><span class="pill pill--amber">In-Progress</span></td><td class="mono">₹4,000</td><td class="mono">₹1,500</td><td class="mono" style="color:var(--danger)">₹2,500</td><td class="text-right"><a href="service-insurance.html" class="btn btn--light btn--sm">Open</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Manage services modal -->
+<div class="modal-backdrop" id="m" style="display:none">
+  <div class="modal">
+    <div class="modal__head"><h3>Manage Services</h3><button class="icon-btn" onclick="document.getElementById('m').style.display='none'">✕</button></div>
+    <div class="modal__body">
+      <p class="muted small" style="margin-bottom:14px">Select the services this customer has engaged. Selected services appear as sections on the profile.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label class="chip-check on"><input type="checkbox" checked> Income Tax</label>
+        <label class="chip-check on"><input type="checkbox" checked> GST</label>
+        <label class="chip-check on"><input type="checkbox" checked> Insurance</label>
+        <label class="chip-check"><input type="checkbox"> Accounting</label>
+        <label class="chip-check"><input type="checkbox"> Loan &amp; Subsidy</label>
+        <label class="chip-check"><input type="checkbox"> Mutual Fund</label>
+        <label class="chip-check"><input type="checkbox"> Government Dept</label>
+        <label class="chip-check"><input type="checkbox"> Certificate</label>
+        <label class="chip-check"><input type="checkbox"> Deeds &amp; Agreement</label>
+        <label class="chip-check"><input type="checkbox"> Company Compliances</label>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--light" onclick="document.getElementById('m').style.display='none'">Cancel</button>
+      <button class="btn btn--primary" onclick="document.getElementById('m').style.display='none'">Save</button>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Dashboard · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="dashboard" data-role="Employee" data-user="Anita Sharma">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head"><div><div class="crumb">Home</div><h1>My Dashboard</h1></div></div>
+
+        <div class="grid grid--4" style="margin-bottom:18px">
+          <div class="stat"><div class="stat__icon bg-blue"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/></svg></div><div class="stat__val">14</div><div class="stat__label">My Leads</div></div>
+          <div class="stat"><div class="stat__icon bg-rose"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2z"/></svg></div><div class="stat__val">3</div><div class="stat__label">Follow-ups Today</div></div>
+          <div class="stat"><div class="stat__icon bg-amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12 22 6.48 17.52 2 11.99 2z"/></svg></div><div class="stat__val">5</div><div class="stat__label">Due / Overdue Jobs</div></div>
+          <div class="stat"><div class="stat__icon bg-green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13z"/></svg></div><div class="stat__val mono">₹62K</div><div class="stat__label">Fees I Collected (Jun)</div></div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1fr 1fr">
+          <div class="card">
+            <div class="card__head"><h3>My Follow-ups Today</h3></div>
+            <div class="card__body" style="padding:0">
+              <div class="notif"><div class="notif__ico bg-blue">R</div><div class="flex between w-full"><div><div class="cell-strong">Rajesh Kumar</div><div class="cell-sub">Income Tax · Referral</div></div><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></div></div>
+              <div class="notif"><div class="notif__ico bg-violet">S</div><div class="flex between w-full"><div><div class="cell-strong">Sunita Devi</div><div class="cell-sub">Loan · Social Media</div></div><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></div></div>
+              <div class="notif"><div class="notif__ico bg-green">A</div><div class="flex between w-full"><div><div class="cell-strong">Amit Joshi</div><div class="cell-sub">Insurance · Referral</div></div><a href="lead-detail.html" class="btn btn--light btn--sm">Open</a></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__head"><h3>My Due / Overdue Jobs</h3></div>
+            <div class="table-wrap">
+              <table class="tbl">
+                <thead><tr><th>Customer</th><th>Job</th><th>Due</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="cell-strong">Patel Traders</td><td>GST · GSTR-3B</td><td><span class="pill pill--red">2 days ago</span></td><td><span class="pill pill--amber">In-Progress</span></td></tr>
+                  <tr><td class="cell-strong">Green Agro</td><td>GST · GSTR-1</td><td><span class="pill pill--amber">In 2 days</span></td><td><span class="pill pill--gray">Pending</span></td></tr>
+                  <tr><td class="cell-strong">Patel Traders</td><td>Insurance · Health</td><td><span class="pill pill--blue">12 Jul</span></td><td><span class="pill pill--amber">In-Progress</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

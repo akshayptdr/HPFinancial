@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Government Department Job · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="customers" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="customers.html">Customers</a> · <a href="customer-profile.html">Patel Traders</a> · Government Dept</div>
+            <h1>Government Department Job</h1></div>
+          <div class="page-head__actions"><a href="customer-profile.html" class="btn btn--ghost">Back to profile</a></div>
+        </div>
+
+        <div class="shared-box">
+          <div class="shared-box__title">Customer (read-only)</div>
+          <div class="shared-grid">
+            <div><div class="k">Firm Name</div><div class="v">Patel Traders</div></div>
+            <div><div class="k">PAN</div><div class="v mono">ABCDE1234F</div></div>
+            <div><div class="k">GST Number</div><div class="v mono">23ABCDE1234F1Z5</div></div>
+            <div><div class="k">Aadhaar</div><div class="v mono">XXXX XXXX 4321</div></div>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1.5fr 1fr">
+          <div class="card">
+            <div class="card__head"><h3>Job Details</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Sub-type <span class="req">*</span></label>
+                <div class="flex gap-8">
+                  <label class="chip-check"><input type="radio" name="st"> Audit</label>
+                  <label class="chip-check"><input type="radio" name="st"> GST</label>
+                  <label class="chip-check on"><input type="radio" name="st" checked> TDS</label>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field"><label>TDS Form Type <span class="req">*</span></label>
+                  <div class="select-wrap"><select class="select"><option>24G</option><option selected>26Q</option><option>24R</option></select></div>
+                </div>
+                <div class="field"><label>Form Name</label><input class="input" placeholder="e.g. 26Q Quarterly"></div>
+                <div class="field"><label>Officer Name</label><input class="input"></div>
+                <div class="field"><label>Officer Contact No.</label><input class="input" type="tel"></div>
+                <div class="field"><label>Contact Person</label><input class="input"></div>
+                <div class="field"><label>TAN Number</label><input class="input mono" placeholder="BPLM12345C"></div>
+                <div class="field"><label>Due Date</label><input class="input" type="date"></div>
+                <div class="field"><label>File Status</label><div class="select-wrap"><select class="select"><option>Pending</option><option>In-Progress</option><option>Filed</option></select></div></div>
+              </div>
+
+              <!-- Conditional encrypted credentials -->
+              <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:8px 0 16px">
+                <div class="flex items-center gap-8" style="margin-bottom:12px">
+                  <svg viewBox="0 0 24 24" width="18" fill="#92400e"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
+                  <b style="color:#92400e;font-size:13px">Portal Credentials</b>
+                  <span class="pill pill--amber" style="margin-left:auto">🔒 Encrypted at rest</span>
+                </div>
+
+                <div class="muted small" style="margin-bottom:6px;font-weight:600">TRACES (shown when TAN present)</div>
+                <div class="form-grid" style="margin-bottom:8px">
+                  <div class="field" style="margin-bottom:8px"><input class="input" placeholder="TRACES ID"></div>
+                  <div class="field" style="margin-bottom:8px"><div class="pw-wrap" style="position:relative"><input class="input" type="password" value="secret123"><span style="position:absolute;right:12px;top:10px;color:var(--n-400);cursor:pointer">👁</span></div></div>
+                </div>
+                <div class="muted small" style="margin-bottom:6px;font-weight:600">Income Tax Portal</div>
+                <div class="form-grid" style="margin-bottom:8px">
+                  <div class="field" style="margin-bottom:8px"><input class="input" placeholder="IT Username"></div>
+                  <div class="field" style="margin-bottom:8px"><input class="input" type="password" placeholder="IT Password"></div>
+                </div>
+                <div class="form-grid">
+                  <div class="field" style="margin-bottom:0"><label class="small">AIN 24Q ID / Password</label><input class="input" placeholder="AIN-24Q ID" style="margin-bottom:6px"><input class="input" type="password" placeholder="AIN-24Q Password"></div>
+                  <div class="field" style="margin-bottom:0"><label class="small">AIN 26Q ID / Password</label><input class="input" placeholder="AIN-26Q ID" style="margin-bottom:6px"><input class="input" type="password" placeholder="AIN-26Q Password"></div>
+                </div>
+              </div>
+
+              <div class="field"><label>Comment</label><textarea class="input" rows="2"></textarea></div>
+              <div class="flex between items-center"><span class="muted small">Credentials visible to admin &amp; assignee only.</span>
+                <div class="flex gap-12"><a href="customer-profile.html" class="btn btn--light">Cancel</a><button class="btn btn--primary">Save Job</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="align-self:start">
+            <div class="card__head"><h3>Fees &amp; Payments</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Agreed Fee (₹)</label><input class="input mono" value="5,000"></div>
+              <div class="kpi-row" style="background:var(--n-50);border-radius:10px;padding:14px">
+                <div class="kpi"><div class="v mono" style="color:var(--success)">₹2,500</div><div class="l">Received</div></div>
+                <div class="kpi"><div class="v mono" style="color:var(--danger)">₹2,500</div><div class="l">Balance</div></div>
+              </div>
+              <button class="btn btn--primary btn--sm w-full" style="margin-top:14px">+ Record Payment</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

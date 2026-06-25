@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HP Financial · Screen Designs</title>
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  .hero{background:linear-gradient(150deg,var(--navy),#0c1d49);color:#fff;padding:48px 40px;}
+  .hero .brand__logo{width:46px;height:46px;font-size:18px;}
+  .hero h1{color:#fff;font-size:30px;margin:18px 0 8px;}
+  .hero p{color:#b9c8ee;max-width:640px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 60px;}
+  .sec-title{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin:28px 0 12px;font-weight:700;}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:820px){.cards{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.cards{grid-template-columns:1fr;}}
+  .scard{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;transition:.15s;}
+  .scard:hover{box-shadow:var(--shadow-md);border-color:var(--primary);transform:translateY(-1px);color:inherit;}
+  .scard .n{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;font-weight:700;}
+  .scard b{font-size:14px;} .scard span{font-size:12px;color:var(--text-muted);display:block;}
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .swatch{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);padding:5px 10px;border-radius:20px;font-size:12px;color:#dce6ff;}
+  .swatch i{width:12px;height:12px;border-radius:50%;}
+</style>
+</head>
+<body style="background:var(--bg)">
+  <div class="hero">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="brand__logo">HP</div>
+        <div class="brand__name" style="font-size:20px">HP<span style="color:var(--sky)">Financial</span></div>
+      </div>
+      <h1>Screen Designs — Phase 1</h1>
+      <p>High-fidelity, clickable mockups for the CA practice management system. Theme: Professional Blue · Light. These are the visual contract for development.</p>
+      <div class="pillrow">
+        <span class="swatch"><i style="background:#14306b"></i>Navy</span>
+        <span class="swatch"><i style="background:#2563eb"></i>Primary</span>
+        <span class="swatch"><i style="background:#0ea5e9"></i>Sky</span>
+        <span class="swatch"><i style="background:#16a34a"></i>Success</span>
+        <span class="swatch"><i style="background:#d97706"></i>Warning</span>
+        <span class="swatch"><i style="background:#dc2626"></i>Danger</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="sec-title">Authentication</div>
+    <div class="cards">
+      <a class="scard" href="login.html"><span class="n bg-blue">1</span><div><b>Login</b><span>Mobile + password</span></div></a>
+      <a class="scard" href="set-password.html"><span class="n bg-blue">2</span><div><b>Set / Reset Password</b><span>First-login change</span></div></a>
+    </div>
+
+    <div class="sec-title">Dashboards</div>
+    <div class="cards">
+      <a class="scard" href="dashboard-admin.html"><span class="n bg-violet">3</span><div><b>Admin Dashboard</b><span>KPIs, charts, due-soon</span></div></a>
+      <a class="scard" href="dashboard-employee.html"><span class="n bg-violet">4</span><div><b>Employee Dashboard</b><span>My work &amp; follow-ups</span></div></a>
+    </div>
+
+    <div class="sec-title">Leads</div>
+    <div class="cards">
+      <a class="scard" href="leads.html"><span class="n bg-sky">5</span><div><b>Leads List</b><span>Filters &amp; pipeline</span></div></a>
+      <a class="scard" href="lead-form.html"><span class="n bg-sky">6</span><div><b>Add / Edit Lead</b><span>Capture form</span></div></a>
+      <a class="scard" href="lead-detail.html"><span class="n bg-sky">7</span><div><b>Lead Detail</b><span>Timeline &amp; follow-ups</span></div></a>
+      <a class="scard" href="lead-masters.html"><span class="n bg-sky">8</span><div><b>Lead Masters</b><span>Types &amp; categories</span></div></a>
+    </div>
+
+    <div class="sec-title">Customers</div>
+    <div class="cards">
+      <a class="scard" href="customers.html"><span class="n bg-green">9</span><div><b>Customers List</b><span>Search &amp; pending fees</span></div></a>
+      <a class="scard" href="customer-profile.html"><span class="n bg-green">10</span><div><b>Customer Profile</b><span>Shared fields, service tabs</span></div></a>
+    </div>
+
+    <div class="sec-title">Service Job Forms</div>
+    <div class="cards">
+      <a class="scard" href="service-income-tax.html"><span class="n bg-amber">11</span><div><b>Income Tax</b><span>ITR / TDS / Audit / Other</span></div></a>
+      <a class="scard" href="service-gst.html"><span class="n bg-amber">12</span><div><b>GST</b><span>Returns / Reg / Audit + fees</span></div></a>
+      <a class="scard" href="service-govt-dept.html"><span class="n bg-amber">13</span><div><b>Government Dept</b><span>Encrypted credentials</span></div></a>
+      <a class="scard" href="service-insurance.html"><span class="n bg-amber">14</span><div><b>Insurance</b><span>Multi-select + Claim Assist</span></div></a>
+      <a class="scard" href="service-mutual-fund.html"><span class="n bg-amber">15</span><div><b>Mutual Fund</b><span>SIP / Lump / Transfer</span></div></a>
+    </div>
+
+    <div class="sec-title">Operations &amp; Reports</div>
+    <div class="cards">
+      <a class="scard" href="work-board.html"><span class="n bg-rose">16</span><div><b>Work Board</b><span>Firm-wide jobs, overdue</span></div></a>
+      <a class="scard" href="reports.html"><span class="n bg-rose">17</span><div><b>Reports</b><span>Index of reports</span></div></a>
+      <a class="scard" href="report-view.html"><span class="n bg-rose">18</span><div><b>Fees / Collection Report</b><span>Filters + export</span></div></a>
+      <a class="scard" href="notifications.html"><span class="n bg-rose">19</span><div><b>Notifications</b><span>In-app center</span></div></a>
+    </div>
+
+    <div class="sec-title">Administration</div>
+    <div class="cards">
+      <a class="scard" href="employees.html"><span class="n bg-blue">20</span><div><b>Employees</b><span>Add + generated password</span></div></a>
+      <a class="scard" href="roles.html"><span class="n bg-blue">21</span><div><b>Roles &amp; Access</b><span>Permission matrix</span></div></a>
+      <a class="scard" href="settings.html"><span class="n bg-blue">22</span><div><b>Settings &amp; Masters</b><span>Services, statuses, reminders</span></div></a>
+    </div>
+  </div>
+</body>
+</html>

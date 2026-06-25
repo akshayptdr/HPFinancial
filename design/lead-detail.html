@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lead · Rajesh Kumar · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="leads" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="leads.html">Leads</a> · Rajesh Kumar</div>
+            <h1 class="flex items-center gap-12">Rajesh Kumar <span class="pill pill--blue">New</span></h1>
+          </div>
+          <div class="page-head__actions">
+            <button class="btn btn--light">Edit</button>
+            <button class="btn btn--primary"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Convert to Customer</button>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1fr 1.4fr">
+          <!-- left: details -->
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div class="card">
+              <div class="card__head"><h3>Lead Details</h3></div>
+              <div class="card__body">
+                <div class="form-grid" style="gap:14px 20px">
+                  <div><div class="cell-sub">Mobile</div><div class="cell-strong mono">98765 43210</div></div>
+                  <div><div class="cell-sub">Lead Type</div><div><span class="tag">Referral</span></div></div>
+                  <div><div class="cell-sub">Interested In</div><div class="cell-strong">Income Tax</div></div>
+                  <div><div class="cell-sub">Contact Person</div><div class="cell-strong">Rajesh Kumar</div></div>
+                  <div><div class="cell-sub">Follow-up</div><div><span class="pill pill--red">Today</span></div></div>
+                  <div><div class="cell-sub">Assignee</div><div class="cell-strong">Anita Sharma</div></div>
+                  <div class="col-span-2" style="grid-column:span 2"><div class="cell-sub">Location</div><div class="cell-strong">Village Rau, Indore, Madhya Pradesh</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card__head"><h3>Status</h3></div>
+              <div class="card__body">
+                <label class="cell-sub" style="display:block;margin-bottom:6px">Move stage</label>
+                <div class="select-wrap"><select class="select"><option>New</option><option>Contacted</option><option>Qualified</option><option>Won</option><option>Lost</option></select></div>
+                <div class="flex gap-8" style="margin-top:12px">
+                  <button class="btn btn--light btn--sm">Reassign</button>
+                  <button class="btn btn--primary btn--sm">Update</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- right: timeline -->
+          <div class="card">
+            <div class="card__head"><h3>Activity &amp; Follow-ups</h3></div>
+            <div class="card__body">
+              <!-- add activity -->
+              <div style="background:var(--n-50);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px">
+                <div class="flex gap-8" style="margin-bottom:10px">
+                  <label class="chip-check on"><input type="radio" name="t" checked> Note</label>
+                  <label class="chip-check"><input type="radio" name="t"> Call</label>
+                  <label class="chip-check"><input type="radio" name="t"> Meeting</label>
+                </div>
+                <textarea class="input" rows="2" placeholder="Add a note or log a call…"></textarea>
+                <div class="flex between items-center" style="margin-top:10px">
+                  <input class="input" type="date" style="width:auto" title="Next follow-up">
+                  <button class="btn btn--primary btn--sm">Add activity</button>
+                </div>
+              </div>
+
+              <div class="timeline">
+                <div class="tl-item status">
+                  <div class="when">Today, 10:24 AM · Anita Sharma</div>
+                  <div class="what">Stage changed → <span class="pill pill--blue">New</span></div>
+                </div>
+                <div class="tl-item call">
+                  <div class="when">Yesterday, 4:10 PM · Anita Sharma</div>
+                  <div class="what">Called — interested in ITR filing</div>
+                  <div class="muted small">Client wants to file for AY 2026-27. Will share documents next week. Follow-up set for today.</div>
+                </div>
+                <div class="tl-item meeting">
+                  <div class="when">22 Jun 2026 · Rahul Shah</div>
+                  <div class="what">Initial enquiry via referral (Mr. Patel)</div>
+                </div>
+                <div class="tl-item">
+                  <div class="when">22 Jun 2026 · System</div>
+                  <div class="what">Lead created</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

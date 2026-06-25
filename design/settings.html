@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings &amp; Masters · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="settings" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content" style="max-width:1000px">
+        <div class="page-head"><div><div class="crumb">Administration · Settings</div><h1>Settings &amp; Masters</h1></div></div>
+
+        <div class="tabs">
+          <div class="tab active">Services</div>
+          <div class="tab">File Statuses</div>
+          <div class="tab">Lead Masters</div>
+          <div class="tab">App Settings</div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1.4fr 1fr">
+          <div class="card">
+            <div class="card__head"><h3>Services</h3><button class="btn btn--primary btn--sm">+ Add Service</button></div>
+            <div class="table-wrap">
+              <table class="tbl">
+                <thead><tr><th>Service</th><th>Code</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td class="cell-strong">Income Tax</td><td class="mono">income_tax</td><td><span class="pill pill--green">Active</span></td><td class="text-right"><button class="btn btn--light btn--sm">Edit</button></td></tr>
+                  <tr><td class="cell-strong">GST</td><td class="mono">gst</td><td><span class="pill pill--green">Active</span></td><td class="text-right"><button class="btn btn--light btn--sm">Edit</button></td></tr>
+                  <tr><td class="cell-strong">Accounting</td><td class="mono">accounting</td><td><span class="pill pill--green">Active</span></td><td class="text-right"><button class="btn btn--light btn--sm">Edit</button></td></tr>
+                  <tr><td class="cell-strong">Loan &amp; Subsidy</td><td class="mono">loan_subsidy</td><td><span class="pill pill--green">Active</span></td><td class="text-right"><button class="btn btn--light btn--sm">Edit</button></td></tr>
+                  <tr><td class="cell-strong">Insurance</td><td class="mono">insurance</td><td><span class="pill pill--green">Active</span></td><td class="text-right"><button class="btn btn--light btn--sm">Edit</button></td></tr>
+                  <tr><td class="cell-strong">Company Compliances</td><td class="mono">company_compliance</td><td><span class="pill pill--green">Active</span></td><td class="text-right"><button class="btn btn--light btn--sm">Edit</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div class="card">
+              <div class="card__head"><h3>File Statuses</h3><button class="btn btn--light btn--sm">+ Add</button></div>
+              <div class="card__body" style="display:flex;flex-direction:column;gap:8px">
+                <div class="flex between items-center"><span class="pill pill--gray">Pending</span><span class="muted small">order 1</span></div>
+                <div class="flex between items-center"><span class="pill pill--amber">In-Progress</span><span class="muted small">order 2</span></div>
+                <div class="flex between items-center"><span class="pill pill--blue">Filed</span><span class="muted small">order 3</span></div>
+                <div class="flex between items-center"><span class="pill pill--green">Completed</span><span class="muted small">order 4</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card__head"><h3>Reminders</h3></div>
+              <div class="card__body">
+                <div class="field"><label>Reminder lead time (days before due)</label><input class="input mono" value="3" style="width:90px"></div>
+                <div class="muted small">In-app reminders are generated daily. Email / WhatsApp / SMS arrive in Phase 2.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

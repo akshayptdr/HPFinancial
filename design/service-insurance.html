@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Insurance Job · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="customers" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb"><a href="customers.html">Customers</a> · <a href="customer-profile.html">Patel Traders</a> · Insurance</div>
+            <h1>Insurance Job</h1></div>
+          <div class="page-head__actions"><a href="customer-profile.html" class="btn btn--ghost">Back to profile</a></div>
+        </div>
+
+        <div class="shared-box">
+          <div class="shared-box__title">Customer (read-only)</div>
+          <div class="shared-grid">
+            <div><div class="k">Firm Name</div><div class="v">Patel Traders</div></div>
+            <div><div class="k">PAN</div><div class="v mono">ABCDE1234F</div></div>
+            <div><div class="k">GST Number</div><div class="v mono">23ABCDE1234F1Z5</div></div>
+            <div><div class="k">Aadhaar</div><div class="v mono">XXXX XXXX 4321</div></div>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1.5fr 1fr">
+          <div class="card">
+            <div class="card__head"><h3>Job Details</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Insurance Type <span class="muted small">(select one or more)</span> <span class="req">*</span></label>
+                <div class="flex gap-8" style="flex-wrap:wrap">
+                  <label class="chip-check on"><input type="checkbox" checked> Health</label>
+                  <label class="chip-check on"><input type="checkbox" checked> Term</label>
+                  <label class="chip-check"><input type="checkbox"> Vehicle</label>
+                  <label class="chip-check on"><input type="checkbox" checked> Claim Assist</label>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field"><label>Referred By</label><input class="input"></div>
+                <div class="field"><label>Company Name</label><input class="input" value="LIC"></div>
+                <div class="field"><label>Policy Type</label>
+                  <div class="flex gap-8"><label class="chip-check on"><input type="radio" name="pol" checked> Fresh</label><label class="chip-check"><input type="radio" name="pol"> Port</label></div>
+                </div>
+                <div class="field"><label>Status</label><input class="input" value="In-Progress"></div>
+              </div>
+
+              <!-- Claim Assist conditional block -->
+              <div style="background:var(--info-bg);border:1px solid #bae6fd;border-radius:12px;padding:16px;margin-bottom:16px">
+                <b style="color:var(--info-fg);font-size:13px;display:block;margin-bottom:12px">Claim Assist details</b>
+                <div class="form-grid">
+                  <div class="field" style="margin-bottom:8px"><label class="small">Company Name</label><input class="input" value="LIC"></div>
+                  <div class="field" style="margin-bottom:8px"><label class="small">Claim Amount (₹)</label><input class="input mono" value="1,20,000"></div>
+                  <div class="field" style="margin-bottom:0"><label class="small">Follow-up Date</label><input class="input" type="date"></div>
+                  <div class="field" style="margin-bottom:0"><label class="small">Comment</label><input class="input"></div>
+                </div>
+              </div>
+
+              <div class="field"><label>Comment</label><textarea class="input" rows="2"></textarea></div>
+              <div class="flex between items-center"><span class="muted small">Claim fields appear only when “Claim Assist” is selected.</span>
+                <div class="flex gap-12"><a href="customer-profile.html" class="btn btn--light">Cancel</a><button class="btn btn--primary">Save Job</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="align-self:start">
+            <div class="card__head"><h3>Fees &amp; Payments</h3></div>
+            <div class="card__body">
+              <div class="field"><label>Agreed Fee (₹)</label><input class="input mono" value="4,000"></div>
+              <div class="kpi-row" style="background:var(--n-50);border-radius:10px;padding:14px">
+                <div class="kpi"><div class="v mono" style="color:var(--success)">₹1,500</div><div class="l">Received</div></div>
+                <div class="kpi"><div class="v mono" style="color:var(--danger)">₹2,500</div><div class="l">Balance</div></div>
+              </div>
+              <button class="btn btn--primary btn--sm w-full" style="margin-top:14px">+ Record Payment</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>

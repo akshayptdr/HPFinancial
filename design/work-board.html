@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Work Board · HP Financial</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="board" data-role="Admin" data-user="Rahul Shah">
+<div class="app">
+  <div id="app"></div>
+  <div class="main">
+    <div id="page">
+      <div class="content">
+
+        <div class="page-head">
+          <div><div class="crumb">Home · Work Board</div><h1>Work Board</h1></div>
+          <div class="page-head__actions"><button class="btn btn--light">Export</button></div>
+        </div>
+
+        <div class="grid grid--4" style="margin-bottom:18px">
+          <div class="stat" style="padding:14px 16px;border-left:3px solid var(--danger)"><div class="stat__val" style="font-size:22px;color:var(--danger)">7</div><div class="stat__label">Overdue</div></div>
+          <div class="stat" style="padding:14px 16px;border-left:3px solid var(--warning)"><div class="stat__val" style="font-size:22px;color:var(--warning)">12</div><div class="stat__label">Due this week</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:22px">34</div><div class="stat__label">In Progress</div></div>
+          <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:22px">186</div><div class="stat__label">Completed (FY)</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card__body" style="padding-bottom:0">
+            <div class="filter-bar">
+              <div class="select-wrap"><select class="select"><option>All Services</option><option>Income Tax</option><option>GST</option><option>Accounting</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Statuses</option><option>Pending</option><option>In-Progress</option><option>Filed</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All Assignees</option><option>Anita</option><option>Vikram</option></select></div>
+              <div class="select-wrap"><select class="select"><option>All FY</option><option>AY 2026-27</option></select></div>
+              <input class="input" type="date" style="width:auto">
+              <div class="toolbar-right"><label class="chip-check on"><input type="checkbox" checked> Overdue only</label></div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Customer</th><th>Service · Job</th><th>Period</th><th>Due</th><th>Assignee</th><th>Status</th><th>Balance</th><th></th></tr></thead>
+              <tbody>
+                <tr style="background:#fff7f7"><td class="cell-strong">Patel Traders</td><td>GST · GSTR-3B</td><td class="mono">Jun-2026</td><td><span class="pill pill--red">2 days ago</span></td><td><span class="avatar-sm">AN</span></td><td><span class="pill pill--amber">In-Progress</span></td><td class="mono" style="color:var(--danger)">₹1,000</td><td class="text-right"><a href="service-gst.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr style="background:#fff7f7"><td class="cell-strong">Sharma &amp; Co</td><td>Income Tax · ITR</td><td class="mono">AY26-27</td><td><span class="pill pill--red">Yesterday</span></td><td><span class="avatar-sm">VK</span></td><td><span class="pill pill--gray">Pending</span></td><td class="mono" style="color:var(--danger)">₹3,500</td><td class="text-right"><a href="service-income-tax.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">Green Agro LLP</td><td>GST · GSTR-1</td><td class="mono">Jun-2026</td><td><span class="pill pill--amber">In 2 days</span></td><td><span class="avatar-sm">AN</span></td><td><span class="pill pill--gray">Pending</span></td><td class="mono" style="color:var(--danger)">₹1,500</td><td class="text-right"><a href="service-gst.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">Mehta Foods</td><td>Accounting</td><td class="mono">Jun-2026</td><td><span class="pill pill--amber">In 3 days</span></td><td><span class="avatar-sm">RS</span></td><td><span class="pill pill--amber">In-Progress</span></td><td class="mono" style="color:var(--success)">₹0</td><td class="text-right"><a href="customer-profile.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">Verma Textiles</td><td>TDS · 26Q</td><td class="mono">Q1 26-27</td><td><span class="pill pill--amber">In 4 days</span></td><td><span class="avatar-sm">VK</span></td><td><span class="pill pill--gray">Pending</span></td><td class="mono" style="color:var(--danger)">₹2,500</td><td class="text-right"><a href="service-income-tax.html" class="btn btn--light btn--sm">Open</a></td></tr>
+                <tr><td class="cell-strong">Patel Traders</td><td>Insurance · Health</td><td class="mono">—</td><td><span class="pill pill--blue">12 Jul</span></td><td><span class="avatar-sm">AN</span></td><td><span class="pill pill--amber">In-Progress</span></td><td class="mono" style="color:var(--danger)">₹2,500</td><td class="text-right"><a href="service-insurance.html" class="btn btn--light btn--sm">Open</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/shell.js"></script>
+</body>
+</html>
