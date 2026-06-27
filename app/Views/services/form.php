@@ -1,11 +1,13 @@
 <?php
-$data = $job && $job['data'] ? json_decode($job['data'], true) : [];
+$prefill = $prefill ?? [];
+$data    = $job && $job['data'] ? json_decode($job['data'], true) : [];
 $colKeys = \App\Support\ServiceConfig::columnKeys();
-$val = function($key) use ($job, $data, $colKeys) {
+$val = function($key) use ($job, $data, $colKeys, $prefill) {
     if ($job && in_array($key, $colKeys, true)) return $job[$key] ?? '';
-    return $data[$key] ?? '';
+    if ($job) return $data[$key] ?? '';
+    return $prefill[$key] ?? $data[$key] ?? '';
 };
-$curSub = $job['sub_type'] ?? '';
+$curSub = $job['sub_type'] ?? $prefill['sub_type'] ?? '';
 $isEdit = (bool)$job;
 $action = $isEdit ? url('/jobs/'.$job['id']) : url('/customers/'.$c['id'].'/jobs/'.str_replace('_','-',$code));
 $fees = (float)($job['fees_amount'] ?? 0);

@@ -57,6 +57,43 @@ class ServiceJobController extends Controller
         $this->redirect('/jobs/' . $id . '/edit');
     }
 
+    public function copy(string $id): void
+    {
+        $job = ServiceJob::find($id);
+        if (!$job) $this->redirect('/customers');
+        $cfg = ServiceConfig::get($job['service_code']);
+        $c   = Customer::find($job['customer_id']);
+        if (!$c || !$cfg) $this->redirect('/customers');
+
+        // Increment financial year: "2024-25" → "2025-26"
+        $fy = $job['financial_year'] ?? '';
+        if ($fy && preg_match('/^(\d{4})-(\d{2})$/', $fy, $m)) {
+            $fy = ($m[1] + 1) . '-' . str_pad((int)$m[2] + 1, 2, '0', STR_PAD_LEFT);
+        } else {
+            $fy = '';
+        }
+
+        $data = $job['data'] ? (json_decode($job['data'], true) ?? []) : [];
+
+        $prefill = array_merge($data, [
+            'sub_type'      => $job['sub_type'],
+            'fees_amount'   => $job['fees_amount'],
+            'comment'       => $job['comment'],
+            'assigned_to'   => $job['assigned_to'],
+            'financial_year'=> $fy,
+            // cycle-specific fields deliberately omitted:
+            // due_date, filing_date, file_status_id, period_label, title
+        ]);
+
+        $this->view('services/form', array_merge($this->nav(), [
+            'pageTitle' => $cfg['label'] . ' Job (Copy)', 'activeNav' => 'customers',
+            'c' => $c, 'code' => $job['service_code'], 'cfg' => $cfg,
+            'job' => null, 'prefill' => $prefill,
+            'fileStatuses' => FileStatus::activeList(), 'employees' => User::activeList(),
+            'payments' => [], 'received' => 0, 'items' => [], 'creds' => [],
+        ]));
+    }
+
     public function edit(string $id): void
     {
         $job = ServiceJob::detail((int)$id);

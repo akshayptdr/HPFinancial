@@ -19,8 +19,9 @@
   </div>
 </div>
 
-<div class="tabs">
+<div class="tabs" id="activity">
   <div class="tab active" data-tab="services" onclick="tab(this)">Services <span class="tag" style="margin-left:4px"><?= count($assigned) ?></span></div>
+  <div class="tab" data-tab="activity" onclick="tab(this)">Activity <span class="tag" style="margin-left:4px"><?= count($activities) ?></span></div>
   <div class="tab" data-tab="profile" onclick="tab(this)">Profile</div>
   <div class="tab" data-tab="documents" onclick="tab(this)">Documents <span class="tag" style="margin-left:4px"><?= count($documents) ?></span></div>
 </div>
@@ -45,11 +46,11 @@
     <div class="card" style="margin-bottom:18px">
       <div class="card__head">
         <h3><?= e($s['name']) ?></h3>
-        <?php if (can('services.edit')): ?><a href="<?= url('/customers/'.$c['id'].'/jobs/'.str_replace('_','-',$code).'/create') ?>" class="btn btn--primary btn--sm">+ Add Job</a><?php endif; ?>
+        <?php if (can('services.edit')): ?><a href="<?= url('/customers/'.$c['id'].'/jobs/'.str_replace('_','-',$code).'/create') ?>" class="btn btn--primary btn--sm">+ New Job</a><?php endif; ?>
       </div>
       <div class="table-wrap">
         <table class="tbl">
-          <thead><tr><th>Sub-type / Detail</th><th>Period / FY</th><th>Due</th><th>Status</th><th>Fee</th><th>Received</th><th>Balance</th><th></th></tr></thead>
+          <thead><tr><th>Sub-type / Detail</th><th>Period / FY</th><th>Due</th><th>Status</th><th>Fee</th><th>Received</th><th>Balance</th><th></th><th></th></tr></thead>
           <tbody>
           <?php if (!$jobs): ?><tr><td colspan="8" class="muted" style="padding:18px;text-align:center">No jobs yet.</td></tr>
           <?php else: foreach ($jobs as $j): $bal = (float)$j['fees_amount'] - (float)$j['received']; ?>
@@ -62,6 +63,7 @@
               <td class="mono"><?= money($j['received']) ?></td>
               <td class="mono" style="color:<?= $bal>0?'var(--danger)':'var(--success)' ?>"><?= money(max(0,$bal)) ?></td>
               <td class="text-right"><a href="<?= url('/jobs/'.$j['id'].'/edit') ?>" class="btn btn--light btn--sm">Open</a></td>
+              <td><?php if (can('services.edit')): ?><a href="<?= url('/jobs/'.$j['id'].'/copy') ?>" class="btn btn--outline btn--sm" title="Copy for next financial year">Renew</a><?php endif; ?></td>
             </tr>
           <?php endforeach; endif; ?>
           </tbody>
@@ -69,6 +71,55 @@
       </div>
     </div>
   <?php endforeach; ?>
+</div>
+
+<!-- ===== Activity tab ===== -->
+<div data-pane="activity" style="display:none">
+  <div class="grid" style="grid-template-columns:1fr 1.5fr;max-width:1000px">
+    <?php if (can('customers.edit')): ?>
+    <div class="card" style="height:fit-content">
+      <div class="card__head"><h3>Add Activity</h3></div>
+      <div class="card__body">
+        <form method="post" action="<?= url('/customers/'.$c['id'].'/activity') ?>">
+          <?= csrf_field() ?>
+          <div class="field"><label>Type</label>
+            <div class="select-wrap"><select class="select" name="type">
+              <option value="note">Note</option>
+              <option value="call">Call</option>
+              <option value="meeting">Meeting</option>
+            </select></div>
+          </div>
+          <div class="field"><label>Description</label>
+            <textarea class="input" name="description" rows="3" placeholder="Add a note, log a call or meeting…"></textarea>
+          </div>
+          <div class="field"><label>Follow-up Date <span class="muted small">(optional)</span></label>
+            <input class="input" type="date" name="follow_up_at">
+          </div>
+          <button class="btn btn--primary w-full">Add Activity</button>
+        </form>
+      </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="card">
+      <div class="card__head"><h3>Timeline</h3></div>
+      <div class="card__body">
+        <?php if (!$activities): ?>
+          <div class="muted" style="padding:20px 0;text-align:center">No activity recorded yet.</div>
+        <?php else: ?>
+        <div class="timeline">
+          <?php foreach ($activities as $a): ?>
+            <div class="tl-item <?= e($a['type']) ?>">
+              <div class="when"><?= e(date('d M Y, H:i', strtotime($a['created_at']))) ?> · <?= e($a['user_name'] ?: 'System') ?></div>
+              <div class="what"><?= e(ucfirst($a['type'])) ?><?= $a['follow_up_at'] ? ' · follow-up ' . date_h($a['follow_up_at']) : '' ?></div>
+              <?php if ($a['description']): ?><div class="muted small" style="margin-top:3px"><?= nl2br(e($a['description'])) ?></div><?php endif; ?>
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== Profile tab ===== -->
@@ -175,6 +226,11 @@ function tab(el){
   document.querySelectorAll('[data-pane]').forEach(p=>p.style.display='none');
   document.querySelector('[data-pane="'+el.dataset.tab+'"]').style.display='';
 }
+// Auto-open tab from URL hash
+(function(){
+  var hash = location.hash.replace('#','');
+  if(hash){var el=document.querySelector('.tab[data-tab="'+hash+'"]');if(el)tab(el);}
+})();
 document.querySelectorAll('.chip-check input').forEach(i=>i.addEventListener('change',e=>e.target.closest('.chip-check').classList.toggle('on',e.target.checked)));
 
 // Cascading District → Tehsil for customer profile

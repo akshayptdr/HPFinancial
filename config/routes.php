@@ -37,6 +37,7 @@ return function (Router $r) {
     $r->add('POST', '/lead-masters',          'LeadController@saveMaster',  ['perm' => 'masters.manage']);
     // AJAX
     $r->add('GET',  '/api/tehsils',           'LeadController@apiTehsils');
+    $r->add('GET',  '/api/search',            'SearchController@suggest');
 
     // Customers
     $r->add('GET',  '/customers',                 'CustomerController@index',         ['perm' => 'customers.view']);
@@ -44,6 +45,7 @@ return function (Router $r) {
     $r->add('POST', '/customers',                 'CustomerController@store',         ['perm' => 'customers.create']);
     $r->add('GET',  '/customers/{id}',            'CustomerController@show',          ['perm' => 'customers.view']);
     $r->add('POST', '/customers/{id}',            'CustomerController@update',        ['perm' => 'customers.edit']);
+    $r->add('POST', '/customers/{id}/activity',   'CustomerController@addActivity',   ['perm' => 'customers.edit']);
     $r->add('POST', '/customers/{id}/documents',  'CustomerController@uploadDoc',     ['perm' => 'customers.edit']);
     $r->add('POST', '/customers/{id}/services',   'CustomerController@assignServices',['perm' => 'customers.edit']);
     $r->add('GET',  '/documents/{id}',            'CustomerController@download',      ['perm' => 'customers.view']);
@@ -52,6 +54,7 @@ return function (Router $r) {
     $r->add('GET',  '/customers/{cid}/jobs/{service}/create', 'ServiceJobController@create', ['perm' => 'services.edit']);
     $r->add('POST', '/customers/{cid}/jobs/{service}',        'ServiceJobController@store',  ['perm' => 'services.edit']);
     $r->add('GET',  '/jobs/{id}/edit',                        'ServiceJobController@edit',   ['perm' => 'services.edit']);
+    $r->add('GET',  '/jobs/{id}/copy',                        'ServiceJobController@copy',   ['perm' => 'services.edit']);
     $r->add('POST', '/jobs/{id}',                             'ServiceJobController@update', ['perm' => 'services.edit']);
     $r->add('POST', '/jobs/{id}/payments',                    'ServiceJobController@addPayment', ['perm' => 'payments.record']);
     $r->add('GET',  '/work-board',                            'ServiceJobController@board',  ['perm' => 'services.view']);

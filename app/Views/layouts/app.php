@@ -69,9 +69,10 @@ $icons = [
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
       </button>
 
-      <div class="topbar__search">
+      <div class="topbar__search" id="globalSearchWrap">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
-        <input type="text" placeholder="Search…">
+        <input type="text" id="globalSearch" placeholder="Search leads, customers…" autocomplete="off">
+        <div class="search-dropdown" id="searchDropdown"></div>
       </div>
 
       <div class="topbar__spacer"></div>
@@ -110,20 +111,79 @@ $icons = [
 
 <script>
 (function () {
-  var sidebar  = document.getElementById('sidebar');
-  var overlay  = document.getElementById('sidebarOverlay');
+  /* ── Sidebar toggle ── */
+  var sidebar   = document.getElementById('sidebar');
+  var overlay   = document.getElementById('sidebarOverlay');
   var hamburger = document.getElementById('hamburger');
-  var closeBtn = document.getElementById('sidebarClose');
+  var closeBtn  = document.getElementById('sidebarClose');
 
-  function open()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-  function close() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+  function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+  function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
 
-  hamburger.addEventListener('click', open);
-  closeBtn.addEventListener('click', close);
-  overlay.addEventListener('click', close);
+  hamburger.addEventListener('click', openSidebar);
+  closeBtn.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  document.querySelectorAll('.nav__item').forEach(function (a) { a.addEventListener('click', closeSidebar); });
 
-  // Auto-close sidebar on nav click (mobile)
-  document.querySelectorAll('.nav__item').forEach(function (a) { a.addEventListener('click', close); });
+  /* ── Global search ── */
+  var searchInput = document.getElementById('globalSearch');
+  var dropdown    = document.getElementById('searchDropdown');
+  var timer       = null;
+  var BASE        = '<?= rtrim(url('/api/search'), '/') ?>';
+
+  var colorMap = { blue: '#2563eb', green: '#16a34a' };
+
+  function renderDropdown(items) {
+    if (!items.length) {
+      dropdown.innerHTML = '<div class="srch-empty">No results found</div>';
+      dropdown.classList.add('open');
+      return;
+    }
+    var html = '';
+    items.forEach(function (r) {
+      var color = colorMap[r.color] || '#64748b';
+      html += '<a class="srch-item" href="' + r.url + '">' +
+        '<span class="srch-badge" style="background:' + color + '22;color:' + color + '">' + r.type + '</span>' +
+        '<span class="srch-info"><span class="srch-name">' + escHtml(r.label) + '</span>' +
+        '<span class="srch-sub">' + escHtml(r.sub) + '</span></span>' +
+        (r.status ? '<span class="srch-status">' + escHtml(r.status) + '</span>' : '') +
+        '</a>';
+    });
+    dropdown.innerHTML = html;
+    dropdown.classList.add('open');
+  }
+
+  function escHtml(s) {
+    return (s || '').replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function closeDropdown() { dropdown.classList.remove('open'); dropdown.innerHTML = ''; }
+
+  searchInput.addEventListener('input', function () {
+    clearTimeout(timer);
+    var q = this.value.trim();
+    if (q.length < 2) { closeDropdown(); return; }
+    timer = setTimeout(function () {
+      fetch(BASE + '?q=' + encodeURIComponent(q))
+        .then(function (r) { return r.json(); })
+        .then(renderDropdown)
+        .catch(closeDropdown);
+    }, 220);
+  });
+
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeDropdown(); this.blur(); }
+    if (e.key === 'Enter') {
+      var first = dropdown.querySelector('.srch-item');
+      if (first) { window.location = first.getAttribute('href'); }
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!document.getElementById('globalSearchWrap').contains(e.target)) closeDropdown();
+  });
 })();
 </script>
 </body>

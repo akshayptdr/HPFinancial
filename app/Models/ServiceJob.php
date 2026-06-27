@@ -12,7 +12,7 @@ class ServiceJob extends Model
             COALESCE((SELECT SUM(amount) FROM service_payments p WHERE p.job_id=j.id),0) AS received
             FROM service_jobs j
             LEFT JOIN file_statuses fs ON fs.id = j.file_status_id
-            WHERE j.customer_id = ? ORDER BY j.service_code, j.id DESC", [$cid]);
+            WHERE j.customer_id = ? ORDER BY j.service_code, COALESCE(j.financial_year,'0000-00') DESC, j.id DESC", [$cid]);
     }
 
     public static function detail(int $id): ?array

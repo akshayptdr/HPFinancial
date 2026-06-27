@@ -14,6 +14,7 @@ use App\Models\ServiceJob;
 use App\Models\User;
 use App\Models\Notification;
 use App\Models\ActivityLog;
+use App\Models\CustomerActivity;
 use App\Support\ServiceConfig;
 use App\Support\MpLocations;
 
@@ -69,6 +70,7 @@ class CustomerController extends Controller
         $this->view('customers/show', array_merge($this->nav(), [
             'pageTitle' => $c['firm_name'] ?: $c['name'], 'activeNav' => 'customers',
             'c' => $c, 'documents' => CustomerDocument::forCustomer((int)$id),
+            'activities' => CustomerActivity::forCustomer((int)$id),
             'services' => Service::activeList(), 'assigned' => $assigned,
             'grouped' => $grouped, 'serviceConfig' => ServiceConfig::all(),
             'billed' => $billed, 'received' => $received,
@@ -96,6 +98,22 @@ class CustomerController extends Controller
         ActivityLog::record('updated', 'customer_services', (int)$id);
         Session::flash('success', 'Services updated.');
         $this->redirect('/customers/' . $id);
+    }
+
+    public function addActivity(string $id): void
+    {
+        if (!Customer::find($id)) $this->redirect('/customers');
+        $followUp = Request::input('follow_up_at') ?: null;
+        CustomerActivity::insert([
+            'customer_id' => $id,
+            'user_id'     => Auth::id(),
+            'type'        => Request::input('type', 'note'),
+            'description' => trim((string) Request::input('description')),
+            'follow_up_at' => $followUp,
+        ]);
+        ActivityLog::record('activity', 'customer', (int)$id);
+        Session::flash('success', 'Activity added.');
+        $this->redirect('/customers/' . $id . '#activity');
     }
 
     public function uploadDoc(string $id): void

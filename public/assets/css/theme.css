@@ -330,6 +330,31 @@ textarea.input { height: auto; padding: 10px 12px; resize: vertical; }
 .err{color:var(--danger);font-size:12px;margin-top:5px;display:block;}
 .input.has-err{border-color:var(--danger);}
 
+/* ---------- Global Search Dropdown ---------- */
+#globalSearchWrap { position: relative; }
+.search-dropdown {
+  display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg); z-index: 200; overflow: hidden; min-width: 320px;
+}
+.search-dropdown.open { display: block; }
+.srch-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid var(--border); text-decoration: none; color: var(--text);
+  transition: background .12s;
+}
+.srch-item:last-child { border-bottom: 0; }
+.srch-item:hover { background: var(--n-50); }
+.srch-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0; letter-spacing: .3px;
+}
+.srch-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.srch-name { font-weight: 600; color: var(--n-900); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srch-sub  { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srch-status { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.srch-empty { padding: 16px 14px; color: var(--text-muted); font-size: 13px; text-align: center; }
+
 /* ============================================================
    RESPONSIVE — Tablet (≤1024px) & Mobile (≤767px)
    Desktop (≥1025px) is UNCHANGED.
