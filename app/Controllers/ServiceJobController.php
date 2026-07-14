@@ -156,7 +156,7 @@ class ServiceJobController extends Controller
 
     public function board(): void
     {
-        $f = Request::only(['service','status','assignee','overdue']);
+        $f = Request::only(['service','status','assignee','overdue','financial_year','q']);
         if (!Auth::isAdmin()) $f['mine'] = Auth::id();
         $this->view('services/board', array_merge($this->nav(), [
             'pageTitle' => 'Work Board', 'activeNav' => 'board',

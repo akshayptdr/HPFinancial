@@ -4,15 +4,30 @@
 <div class="card">
   <div class="card__body" style="padding-bottom:0">
     <form method="get" class="filter-bar">
+      <input class="input" id="boardSearch" name="q" value="<?= e($f['q']??'') ?>" placeholder="Search customer…" style="width:180px" autocomplete="off">
       <div class="select-wrap"><select class="select" name="service"><option value="">All Services</option>
         <?php foreach ($services as $s): ?><option value="<?= e($s['code']) ?>" <?= ($f['service']??'')==$s['code']?'selected':'' ?>><?= e($s['name']) ?></option><?php endforeach; ?></select></div>
       <div class="select-wrap"><select class="select" name="status"><option value="">All Statuses</option>
         <?php foreach ($fileStatuses as $fs): ?><option value="<?= $fs['id'] ?>" <?= ($f['status']??'')==$fs['id']?'selected':'' ?>><?= e($fs['name']) ?></option><?php endforeach; ?></select></div>
+      <div class="select-wrap"><select class="select" name="financial_year"><option value="">All Years</option>
+        <?php for($fy=2040;$fy>=2018;$fy--):$fyLabel=$fy.'-'.str_pad(($fy+1)%100,2,'0',STR_PAD_LEFT); ?>
+          <option value="<?= $fyLabel ?>" <?= ($f['financial_year']??'')===$fyLabel?'selected':'' ?>><?= $fyLabel ?></option>
+        <?php endfor; ?></select></div>
       <label class="chip-check <?= !empty($f['overdue'])?'on':'' ?>"><input type="checkbox" name="overdue" value="1" <?= !empty($f['overdue'])?'checked':'' ?> onchange="this.form.submit()"> Overdue only</label>
       <button class="btn btn--primary btn--sm">Filter</button>
       <a href="<?= url('/work-board') ?>" class="btn btn--ghost btn--sm">Reset</a>
     </form>
   </div>
+<script>
+(function(){
+  var t, inp = document.getElementById('boardSearch');
+  if (!inp) return;
+  inp.addEventListener('input', function(){
+    clearTimeout(t);
+    t = setTimeout(function(){ inp.closest('form').submit(); }, 400);
+  });
+})();
+</script>
   <div class="table-wrap">
     <table class="tbl">
       <thead><tr><th>Customer</th><th>Service · Job</th><th>Period</th><th>Due</th><th>Assignee</th><th>Status</th><th>Balance</th><th></th></tr></thead>

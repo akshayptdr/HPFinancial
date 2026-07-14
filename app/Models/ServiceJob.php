@@ -39,11 +39,13 @@ class ServiceJob extends Model
                 LEFT JOIN users u ON u.id = j.assigned_to
                 WHERE 1=1";
         $p = [];
+        if (!empty($f['q']))        { $sql .= " AND (c.name LIKE ? OR c.firm_name LIKE ?)"; $p[] = '%'.$f['q'].'%'; $p[] = '%'.$f['q'].'%'; }
         if (!empty($f['service']))  { $sql .= " AND j.service_code = ?"; $p[] = $f['service']; }
         if (!empty($f['status']))   { $sql .= " AND j.file_status_id = ?"; $p[] = $f['status']; }
-        if (!empty($f['assignee'])) { $sql .= " AND j.assigned_to = ?"; $p[] = $f['assignee']; }
-        if (!empty($f['mine']))     { $sql .= " AND j.assigned_to = ?"; $p[] = $f['mine']; }
-        if (!empty($f['overdue']))  { $sql .= " AND j.due_date < CURDATE() AND IFNULL(fs.name,'') <> 'Completed'"; }
+        if (!empty($f['assignee']))       { $sql .= " AND j.assigned_to = ?"; $p[] = $f['assignee']; }
+        if (!empty($f['mine']))           { $sql .= " AND j.assigned_to = ?"; $p[] = $f['mine']; }
+        if (!empty($f['financial_year'])) { $sql .= " AND j.financial_year = ?"; $p[] = $f['financial_year']; }
+        if (!empty($f['overdue']))        { $sql .= " AND j.due_date < CURDATE() AND IFNULL(fs.name,'') <> 'Completed'"; }
         $sql .= " ORDER BY (j.due_date IS NULL), j.due_date ASC LIMIT 300";
         return self::query($sql, $p);
     }

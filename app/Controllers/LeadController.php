@@ -43,8 +43,6 @@ class LeadController extends Controller
             'pageTitle' => 'New Lead', 'activeNav' => 'leads', 'lead' => null,
             'types' => LeadType::activeList(), 'categories' => LeadCategory::activeList(),
             'selectedCategories' => [],
-            'districts' => MpLocations::districts(),
-            'tehsilsMap' => MpLocations::data(),
         ]));
     }
 
@@ -88,8 +86,6 @@ class LeadController extends Controller
             'pageTitle' => 'Edit Lead', 'activeNav' => 'leads', 'lead' => $lead,
             'types' => LeadType::activeList(), 'categories' => LeadCategory::activeList(),
             'selectedCategories' => $selected,
-            'districts' => MpLocations::districts(),
-            'tehsilsMap' => MpLocations::data(),
         ]));
     }
 
@@ -132,8 +128,7 @@ class LeadController extends Controller
         }
         $cid = Customer::insert([
             'lead_id' => $id, 'name' => $lead['name'], 'mobile' => $lead['mobile'],
-            'state' => $lead['state'], 'district' => $lead['district'], 'tehsil' => $lead['tehsil'],
-            'village' => $lead['village'], 'contact_person' => $lead['contact_person'],
+            'address' => $lead['address'], 'contact_person' => $lead['contact_person'],
             'assigned_to' => $lead['assigned_to'] ?: Auth::id(), 'created_by' => Auth::id(),
         ]);
 
@@ -198,10 +193,8 @@ class LeadController extends Controller
             'name'           => trim((string)Request::input('name')),
             'mobile'         => preg_replace('/\s+/', '', (string)Request::input('mobile')),
             'lead_type_id'   => Request::input('lead_type_id') ?: null,
-            'state'          => Request::input('state') ?: null,
-            'district'       => Request::input('district') ?: null,
-            'tehsil'         => Request::input('tehsil') ?: null,
-            'village'        => Request::input('village') ?: null,
+            'address'        => Request::input('address') ?: null,
+            'referred_by'    => Request::input('referred_by') ?: null,
             'contact_person' => Request::input('contact_person') ?: null,
             'follow_up_date' => Request::input('follow_up_date') ?: null,
             'notes'          => Request::input('notes') ?: null,

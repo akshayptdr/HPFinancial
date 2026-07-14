@@ -61,7 +61,8 @@ return function (Router $r) {
 
     // Reports
     $r->add('GET', '/reports',        'ReportController@index', ['perm' => 'reports.view']);
-    $r->add('GET', '/reports/{type}', 'ReportController@show',  ['perm' => 'reports.view']);
+    $r->add('GET', '/reports/{type}',        'ReportController@show',   ['perm' => 'reports.view']);
+    $r->add('GET', '/reports/{type}/export', 'ReportController@export', ['perm' => 'reports.view']);
 
     // Notifications
     $r->add('GET',  '/notifications',          'NotificationController@index');

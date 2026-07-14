@@ -2,7 +2,7 @@
 <div class="page-head">
   <div><div class="crumb"><a href="<?= url('/customers') ?>">Customers</a> · <?= e($c['firm_name'] ?: $c['name']) ?></div>
     <h1 class="flex items-center gap-12"><?= e($c['firm_name'] ?: $c['name']) ?> <?= status_pill($c['status']) ?></h1>
-    <div class="muted" style="margin-top:4px"><?= e($c['name']) ?><?= $c['district']?' · '.e(trim(($c['district']).', '.($c['state']??''),', ')):'' ?></div></div>
+    <div class="muted" style="margin-top:4px"><?= e($c['name']) ?><?= $c['address']?' · '.e($c['address']):'' ?></div></div>
   <div class="page-head__actions">
     <?php if (can('customers.edit')): ?><button class="btn btn--primary" onclick="document.getElementById('svcModal').style.display='grid'">Manage Services</button><?php endif; ?>
   </div>
@@ -139,21 +139,9 @@
           <div class="field"><label>Aadhaar</label><input class="input" name="aadhaar_number" value="<?= e($c['aadhaar_number']) ?>"></div>
           <div class="field"><label>Bank / Passbook</label><input class="input" name="bank_details" value="<?= e($c['bank_details']) ?>"></div>
           <div class="field"><label>Contact Person</label><input class="input" name="contact_person" value="<?= e($c['contact_person']) ?>"></div>
-          <div class="field"><!-- spacer --></div>
-          <div class="field"><label>State</label><input class="input" name="state" value="<?= e($c['state'] ?: 'Madhya Pradesh') ?>" placeholder="State"></div>
-          <div class="field"><label>District</label>
-            <div class="select-wrap"><select class="select" name="district" id="cust-sel-district">
-              <option value="">— select —</option>
-              <?php foreach ($mpDistricts as $d): ?><option value="<?= e($d) ?>" <?= ($c['district']===$d)?'selected':'' ?>><?= e($d) ?></option><?php endforeach; ?>
-            </select></div></div>
-          <div class="field"><label>Tehsil</label>
-            <div class="select-wrap"><select class="select" name="tehsil" id="cust-sel-tehsil">
-              <option value="">— select district first —</option>
-              <?php if (!empty($c['district']) && isset($mpTehsilsMap[$c['district']])): ?>
-                <?php foreach ($mpTehsilsMap[$c['district']] as $t): ?><option value="<?= e($t) ?>" <?= ($c['tehsil']===$t)?'selected':'' ?>><?= e($t) ?></option><?php endforeach; ?>
-              <?php endif; ?>
-            </select></div></div>
-          <div class="field"><label>Village</label><input class="input" name="village" value="<?= e($c['village']) ?>" placeholder="Village name"></div>
+          <div class="field"><label>Contact Person Mobile</label><input class="input" name="contact_person_mobile" value="<?= e($c['contact_person_mobile'] ?? '') ?>"></div>
+          <div class="field" style="grid-column:span 2"><label>Address</label>
+            <textarea class="input" name="address" rows="2" placeholder="Village, Tehsil, District, State…"><?= e($c['address'] ?? '') ?></textarea></div>
         </div>
         <div class="text-right"><button class="btn btn--primary" <?= can('customers.edit')?'':'disabled' ?>>Save Profile</button></div>
       </form>
@@ -233,29 +221,4 @@ function tab(el){
 })();
 document.querySelectorAll('.chip-check input').forEach(i=>i.addEventListener('change',e=>e.target.closest('.chip-check').classList.toggle('on',e.target.checked)));
 
-// Cascading District → Tehsil for customer profile
-(function(){
-  var tehsilsMap = <?= json_encode($mpTehsilsMap, JSON_UNESCAPED_UNICODE) ?>;
-  var distEl = document.getElementById('cust-sel-district');
-  var tehsEl = document.getElementById('cust-sel-tehsil');
-  if (!distEl || !tehsEl) return;
-  var currentTehsil = <?= json_encode($c['tehsil'] ?? '') ?>;
-
-  function populateTehsils(district, sel) {
-    tehsEl.innerHTML = '';
-    var blank = document.createElement('option');
-    blank.value = '';
-    blank.textContent = district ? '— select tehsil —' : '— select district first —';
-    tehsEl.appendChild(blank);
-    (tehsilsMap[district] || []).forEach(function(t){
-      var o = document.createElement('option');
-      o.value = t; o.textContent = t;
-      if (t === sel) o.selected = true;
-      tehsEl.appendChild(o);
-    });
-  }
-
-  if (distEl.value) populateTehsils(distEl.value, currentTehsil);
-  distEl.addEventListener('change', function(){ populateTehsils(this.value, ''); });
-})();
 </script>

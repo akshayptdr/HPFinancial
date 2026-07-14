@@ -1,8 +1,6 @@
 <?php
 $isEdit = (bool)$lead;
 $act    = $isEdit ? url('/leads/'.$lead['id']) : url('/leads');
-$selDistrict = $lead['district'] ?? old('district') ?? '';
-$selTehsil   = $lead['tehsil']   ?? old('tehsil')   ?? '';
 ?>
 <div class="page-head" style="max-width:960px">
   <div><div class="crumb"><a href="<?= url('/leads') ?>">Leads</a> · <?= $isEdit?'Edit':'New' ?></div>
@@ -67,45 +65,14 @@ $selTehsil   = $lead['tehsil']   ?? old('tehsil')   ?? '';
 
       <!-- Location -->
       <div class="divider"></div>
-      <h3 style="font-size:15px;margin-bottom:14px">Location</h3>
-      <div class="form-grid form-grid--4">
+      <div class="field">
+        <label>Address</label>
+        <textarea class="input" name="address" rows="2" placeholder="Village, Tehsil, District, State…"><?= e($lead['address'] ?? '') ?></textarea>
+      </div>
 
-        <div class="field">
-          <label>State</label>
-          <input class="input" name="state" value="<?= e($lead['state']??'Madhya Pradesh') ?>" placeholder="State">
-        </div>
-
-        <div class="field">
-          <label>District</label>
-          <div class="select-wrap">
-            <select class="select" name="district" id="sel-district">
-              <option value="">— select —</option>
-              <?php foreach ($districts as $d): ?>
-                <option value="<?= e($d) ?>" <?= $selDistrict===$d?'selected':'' ?>><?= e($d) ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Tehsil</label>
-          <div class="select-wrap">
-            <select class="select" name="tehsil" id="sel-tehsil">
-              <option value="">— select district first —</option>
-              <?php if ($selDistrict && isset($tehsilsMap[$selDistrict])): ?>
-                <?php foreach ($tehsilsMap[$selDistrict] as $t): ?>
-                  <option value="<?= e($t) ?>" <?= $selTehsil===$t?'selected':'' ?>><?= e($t) ?></option>
-                <?php endforeach; ?>
-              <?php endif; ?>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Village</label>
-          <input class="input" name="village" id="inp-village" value="<?= e($lead['village']??'') ?>" placeholder="Village name">
-        </div>
-
+      <div class="field">
+        <label>Referred By</label>
+        <input class="input" name="referred_by" value="<?= e($lead['referred_by'] ?? '') ?>" placeholder="Referral person name">
       </div>
 
       <!-- Notes -->
@@ -124,37 +91,6 @@ $selTehsil   = $lead['tehsil']   ?? old('tehsil')   ?? '';
 
 <script>
 (function () {
-  var tehsilsMap = <?= json_encode($tehsilsMap, JSON_UNESCAPED_UNICODE) ?>;
-  var selDistrict = <?= json_encode($selDistrict) ?>;
-  var selTehsil   = <?= json_encode($selTehsil) ?>;
-
-  var distEl  = document.getElementById('sel-district');
-  var tehsEl  = document.getElementById('sel-tehsil');
-
-  function populateTehsils(district, currentTehsil) {
-    tehsEl.innerHTML = '';
-    var blank = document.createElement('option');
-    blank.value = '';
-    blank.textContent = district ? '— select tehsil —' : '— select district first —';
-    tehsEl.appendChild(blank);
-    var list = tehsilsMap[district] || [];
-    list.forEach(function (t) {
-      var o = document.createElement('option');
-      o.value = t;
-      o.textContent = t;
-      if (t === currentTehsil) o.selected = true;
-      tehsEl.appendChild(o);
-    });
-  }
-
-  // Init on page load (edit mode)
-  if (selDistrict) populateTehsils(selDistrict, selTehsil);
-
-  distEl.addEventListener('change', function () {
-    populateTehsils(this.value, '');
-  });
-
-  // Highlight cat-chip on checkbox change
   document.querySelectorAll('.cat-chip input[type=checkbox]').forEach(function (cb) {
     cb.addEventListener('change', function () {
       this.closest('.cat-chip').classList.toggle('cat-chip--on', this.checked);

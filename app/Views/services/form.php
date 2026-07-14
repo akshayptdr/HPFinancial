@@ -68,8 +68,18 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
                 <input class="input" type="date" name="<?= e($key) ?>" value="<?= e($v) ?>">
               <?php elseif ($type==='number'): ?>
                 <input class="input mono" type="number" step="0.01" name="<?= e($key) ?>" value="<?= e($v) ?>">
-              <?php elseif ($type==='fy'): ?>
-                <input class="input" name="<?= e($key) ?>" value="<?= e($v) ?>" placeholder="2025-26">
+              <?php elseif ($type==='fy'):
+                $curFyBase = (int)date('n') >= 4 ? (int)date('Y') : (int)date('Y') - 1;
+                $defaultFy = $curFyBase.'-'.str_pad(($curFyBase+1)%100,2,'0',STR_PAD_LEFT);
+                $selFy = $v ?: $defaultFy;
+              ?>
+                <div class="select-wrap"><select class="select" name="<?= e($key) ?>">
+                  <option value="">— select FY —</option>
+                  <?php for($fy=2018;$fy<=2040;$fy++):
+                    $fyLabel=$fy.'-'.str_pad(($fy+1)%100,2,'0',STR_PAD_LEFT); ?>
+                    <option value="<?= $fyLabel ?>" <?= $selFy===$fyLabel?'selected':'' ?>><?= $fyLabel ?></option>
+                  <?php endfor; ?>
+                </select></div>
               <?php else: ?>
                 <input class="input" name="<?= e($key) ?>" value="<?= e($v) ?>">
               <?php endif; ?>
@@ -98,13 +108,13 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
           <div class="divider"></div>
           <div class="field"><label>Insurance Type (select one or more)</label>
             <div class="flex gap-8" style="flex-wrap:wrap">
-              <?php foreach (['health'=>'Health','term'=>'Term','vehicle'=>'Vehicle','claim_assist'=>'Claim Assist'] as $k=>$lbl): $on=isset($selItems[$k]); ?>
+              <?php foreach (['health'=>'Health','term'=>'Term','vehicle'=>'Vehicle','claim_assist'=>'Claim Assist','other'=>'Other'] as $k=>$lbl): $on=isset($selItems[$k]); ?>
                 <label class="chip-check <?= $on?'on':'' ?>"><input type="checkbox" name="ins_types[]" value="<?= $k ?>" <?= $on?'checked':'' ?>> <?= $lbl ?></label>
               <?php endforeach; ?>
             </div>
           </div>
         <?php elseif ($special==='credentials'): ?>
-          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:8px 0">
+          <div id="portal-creds-box" style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px;margin:8px 0;<?= in_array($curSub,['audit','gst'])?'display:none':'' ?>">
             <div class="flex items-center gap-8" style="margin-bottom:12px"><b style="color:#92400e;font-size:13px">Portal Credentials</b><span class="pill pill--amber" style="margin-left:auto">🔒 Encrypted at rest</span></div>
             <div class="form-grid">
               <div class="field" style="margin-bottom:8px"><label class="small">TRACES ID</label><input class="input" name="traces_id" value="<?= e($creds['traces']['username']??'') ?>"></div>
@@ -120,7 +130,9 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
         <?php endif; ?>
 
         <div class="field" style="margin-top:14px"><label>Comment</label><textarea class="input" name="comment" rows="2"><?= e($val('comment')) ?></textarea></div>
+        <?php if ($code !== 'mutual_fund'): ?>
         <div class="field"><label>Agreed Fee (₹)</label><input class="input mono" type="number" step="0.01" name="fees_amount" value="<?= e($fees ?: '') ?>"></div>
+        <?php endif; ?>
         <div class="flex between items-center">
           <span class="muted small">Fields adjust to the selected sub-type.</span>
           <div class="flex gap-12"><a href="<?= url('/customers/'.$c['id']) ?>" class="btn btn--light">Cancel</a><button class="btn btn--primary"><?= $isEdit?'Update Job':'Save Job' ?></button></div>
@@ -175,6 +187,9 @@ function syncSub(){
     var subs=el.getAttribute('data-subs').split(',');
     el.style.display = (!sub || subs.indexOf(sub)>=0) ? '' : 'none';
   });
+  // Hide Portal Credentials when Audit is selected (govt_dept)
+  var credsBox = document.getElementById('portal-creds-box');
+  if (credsBox) credsBox.style.display = (sub === 'audit' || sub === 'gst') ? 'none' : '';
 }
 document.querySelectorAll('.chip-check input[type=checkbox]').forEach(i=>i.addEventListener('change',e=>e.target.closest('.chip-check').classList.toggle('on',e.target.checked)));
 syncSub();

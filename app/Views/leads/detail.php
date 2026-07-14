@@ -31,9 +31,10 @@
           <div><div class="cell-sub">Lead Type</div><div class="cell-strong"><?= e($lead['type_name'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Interested In</div><div class="cell-strong"><?= e($lead['category_names'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Contact Person</div><div class="cell-strong"><?= e($lead['contact_person'] ?: '—') ?></div></div>
+          <div><div class="cell-sub">Referred By</div><div class="cell-strong"><?= e($lead['referred_by'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Follow-up</div><div><?= $lead['follow_up_date']?due_pill($lead['follow_up_date']):'—' ?></div></div>
-          <div class="col-span-2" style="grid-column:span 2"><div class="cell-sub">Location</div>
-            <div class="cell-strong"><?= e(trim(implode(', ', array_filter([$lead['village'],$lead['tehsil'],$lead['district'],$lead['state']]))) ?: '—') ?></div></div>
+          <div class="col-span-2" style="grid-column:span 2"><div class="cell-sub">Address</div>
+            <div class="cell-strong"><?= e($lead['address'] ?: '—') ?></div></div>
           <?php if ($lead['notes']): ?><div class="col-span-2" style="grid-column:span 2"><div class="cell-sub">Notes</div><div><?= nl2br(e($lead['notes'])) ?></div></div><?php endif; ?>
         </div>
       </div>

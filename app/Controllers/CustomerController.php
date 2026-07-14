@@ -168,11 +168,9 @@ class CustomerController extends Controller
             'gst_number' => strtoupper((string)Request::input('gst_number')) ?: null,
             'email' => Request::input('email') ?: null,
             'bank_details' => Request::input('bank_details') ?: null,
-            'state' => Request::input('state') ?: null,
-            'district' => Request::input('district') ?: null,
-            'tehsil' => Request::input('tehsil') ?: null,
-            'village' => Request::input('village') ?: null,
+            'address' => Request::input('address') ?: null,
             'contact_person' => Request::input('contact_person') ?: null,
+            'contact_person_mobile' => Request::input('contact_person_mobile') ?: null,
             'customer_type' => Request::input('customer_type') ?: null,
         ];
         if ($isCreate) { $d['created_by'] = Auth::id(); if (!$d['assigned_to']) $d['assigned_to'] = Auth::id(); }

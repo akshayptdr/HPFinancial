@@ -20,7 +20,8 @@ class ServiceConfig
                 'subtypes' => ['itr'=>'ITR','tds'=>'TDS','audit'=>'Audit','other'=>'Other'],
                 'fields' => [
                     ['title','Title (for Other)','text',null,['other']],
-                    ['form_type','TDS Form Type','select',['24Q'=>'24Q','26Q'=>'26Q'],['tds']],
+                    ['form_type','TDS Form Type','select',['24Q'=>'24Q','26Q'=>'26Q','both'=>'Both (24Q & 26Q)'],['tds']],
+                    ['quarter','Financial Quarter','select',['Q1'=>'Q1 (Apr–Jun)','Q2'=>'Q2 (Jul–Sep)','Q3'=>'Q3 (Oct–Dec)','Q4'=>'Q4 (Jan–Mar)'],['tds']],
                     ['financial_year','Financial Year','fy'],
                 ],
             ],
@@ -30,11 +31,14 @@ class ServiceConfig
                 'fields' => [
                     ['return_type','Return Type','select',['gstr1'=>'GSTR-1 (10th)','gstr3b'=>'GSTR-3B (20th)'],['returns']],
                     ['filing_type','Filing Type','select',['monthly'=>'Monthly','quarterly'=>'Quarterly'],['returns']],
+                    ['gst_portal_user_id','User ID','text',null,['returns']],
                     ['period_label','Period','period',null,['returns']],
                     ['filing_date','Date of Filing','date',null,['returns']],
                     ['trn_number','TRN Number','text',null,['registration']],
                     ['arn_number','ARN Number','text',null,['registration']],
                     ['gst_user_id','GST User ID','text',null,['registration']],
+                    ['gst_reg_password','Password','text',null,['registration']],
+                    ['gst_number_received','GST Number Received','select',['yes'=>'Yes','no'=>'No'],['registration']],
                     ['reg_status','Status','select',['submitted'=>'Submitted','received'=>'GST Number Received'],['registration']],
                     ['audit_form_type','Form Type','select',['9'=>'GSTR-9','9_9c'=>'GSTR-9 & 9C'],['audit']],
                     ['financial_year','Financial Year','fy',null,['audit']],
@@ -45,7 +49,6 @@ class ServiceConfig
                 'fields' => [
                     ['frequency','Frequency','select',['monthly'=>'Monthly','quarterly'=>'Quarterly','yearly'=>'Yearly']],
                     ['financial_year','Financial Year','fy'],
-                    ['period_label','Period','period'],
                 ],
             ],
             'loan_subsidy' => [
@@ -69,7 +72,6 @@ class ServiceConfig
             'insurance' => [
                 'label' => 'Insurance',
                 'fields' => [
-                    ['referred_by','Referred By','text'],
                     ['company_name','Company Name','text'],
                     ['policy_type','Policy Type','select',['fresh'=>'Fresh','port'=>'Port']],
                     ['status_text','Status','text'],
@@ -79,15 +81,16 @@ class ServiceConfig
             ],
             'govt_dept' => [
                 'label' => 'Government Department',
-                'subtypes' => ['audit'=>'Audit','gst'=>'GST','tds'=>'TDS'],
+                'subtypes' => ['audit'=>'Audit','gst'=>'GST','tds'=>'TDS','other'=>'Other'],
                 'fields' => [
                     ['officer_name','Officer Name','text'],
                     ['officer_contact','Officer Contact No.','text'],
                     ['contact_person','Contact Person','text'],
                     ['audit_type','Type of Audit','text',null,['audit']],
-                    ['gst_form_type','GST Form Type','text',null,['gst']],
+                    ['gst_form_type','GST Form Type','select',['gstr7'=>'GSTR-7','other'=>'Other'],['gst']],
                     ['gst_user_id','GST User ID','text',null,['gst']],
-                    ['tds_form_type','TDS Form Type','select',['24G'=>'24G','26Q'=>'26Q','24R'=>'24R'],['tds']],
+                    ['gst_password','Password','text',null,['gst']],
+                    ['tds_form_type','TDS Form Type','select',['24G'=>'24G','26Q'=>'26Q','24Q'=>'24Q'],['tds']],
                     ['tan_number','TAN Number','text',null,['tds']],
                     ['financial_year','Financial Year','fy'],
                 ],
@@ -110,7 +113,6 @@ class ServiceConfig
                 'label' => 'Company Compliances',
                 'subtypes' => ['audit'=>'Audit','company_registration'=>'Company Registration','compliances'=>'Compliances','other'=>'Other'],
                 'fields' => [
-                    ['form_name','Form Name','text',null,['audit','compliances','other']],
                     ['cs_number','CS Number','text',null,['company_registration']],
                     ['cs_name','CS Name','text',null,['company_registration']],
                     ['cs_contact','CS Contact Number','text',null,['company_registration']],
