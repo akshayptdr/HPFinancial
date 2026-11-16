@@ -15,7 +15,7 @@
           <td class="flex items-center gap-12"><span class="avatar-sm"><?= e(initials($emp['name'])) ?></span>
             <div><div class="cell-strong"><?= e($emp['name']) ?></div><div class="cell-sub"><?= e($emp['email'] ?: '—') ?></div></div></td>
           <td class="mono"><?= e($emp['mobile']) ?></td>
-          <td><span class="pill pill--<?= $emp['role_slug']==='admin'?'blue':'gray' ?>"><?= e($emp['role_name']) ?></span></td>
+          <td><span class="pill pill--<?= $emp['role_slug']==='admin'?'blue':($emp['role_slug']==='manager'?'sky':'gray') ?>"><?= e($emp['role_name']) ?></span></td>
           <td class="cell-sub"><?= $emp['last_login_at'] ? e(date('d M, H:i', strtotime($emp['last_login_at']))) : 'Never' ?></td>
           <td><?= status_pill($emp['status']) ?></td>
           <td class="text-right">
@@ -44,7 +44,7 @@
           <div class="field"><label>Mobile (login) <span class="req">*</span></label><input class="input" name="mobile" id="f_mobile" required></div>
           <div class="field"><label>Email</label><input class="input" name="email" id="f_email"></div>
           <div class="field"><label>Employee Type</label>
-            <div class="select-wrap"><select class="select" name="type" id="f_type"><option value="employee">Employee</option><option value="admin">Admin</option></select></div></div>
+            <div class="select-wrap"><select class="select" name="type" id="f_type"><option value="employee">Employee</option><option value="manager">Manager</option><option value="admin">Admin</option></select></div></div>
           <div class="field"><label>Status</label>
             <div class="select-wrap"><select class="select" name="status" id="f_status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div>
         </div>
@@ -65,7 +65,7 @@ function editEmp(e){
   document.getElementById('f_name').value=e.name;
   document.getElementById('f_mobile').value=e.mobile;
   document.getElementById('f_email').value=e.email||'';
-  document.getElementById('f_type').value=(e.role_slug==='admin'?'admin':'employee');
+  document.getElementById('f_type').value=(['admin','manager'].indexOf(e.role_slug)>-1?e.role_slug:'employee');
   document.getElementById('genNote').style.display='none';
   document.getElementById('addEmp').style.display='grid';
 }

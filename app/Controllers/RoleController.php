@@ -20,6 +20,7 @@ class RoleController extends Controller
             'permissions' => Permission::all('id ASC'),
             'adminPerms'  => Role::permissionIds(1),
             'empPerms'    => Role::permissionIds(2),
+            'mgrPerms'    => Role::permissionIds(3),
             'unreadCount' => Notification::unreadCount(Auth::id()),
         ]);
     }
@@ -28,8 +29,10 @@ class RoleController extends Controller
     {
         $perms = array_map('intval', (array) Request::input('perms', []));
         Role::setPermissions(2, $perms); // employee role
+        $mgr = array_map('intval', (array) Request::input('mgr_perms', []));
+        Role::setPermissions(3, $mgr);   // manager role
         ActivityLog::record('updated', 'role_permissions', 2);
-        Session::flash('success', 'Employee permissions updated.');
+        Session::flash('success', 'Employee and Manager permissions updated.');
         $this->redirect('/roles');
     }
 }

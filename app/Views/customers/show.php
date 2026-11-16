@@ -1,12 +1,15 @@
-<?php $pending = max(0, $billed - $received); ?>
 <div class="page-head">
   <div><div class="crumb"><a href="<?= url('/customers') ?>">Customers</a> · <?= e($c['firm_name'] ?: $c['name']) ?></div>
     <h1 class="flex items-center gap-12"><?= e($c['firm_name'] ?: $c['name']) ?> <?= status_pill($c['status']) ?></h1>
     <div class="muted" style="margin-top:4px"><?= e($c['name']) ?><?= $c['address']?' · '.e($c['address']):'' ?></div></div>
   <div class="page-head__actions">
+    <?php if (can('invoices.manage')): ?><a class="btn btn--outline" href="<?= url('/customers/'.$c['id'].'/invoices/new') ?>">Create Invoice</a><?php endif; ?>
+    <?php if (can('payments.record')): ?><button class="btn btn--outline" onclick="openPay()">Receive Payment</button><?php endif; ?>
     <?php if (can('customers.edit')): ?><button class="btn btn--primary" onclick="document.getElementById('svcModal').style.display='grid'">Manage Services</button><?php endif; ?>
   </div>
 </div>
+
+<?php include APP_PATH . '/Views/families/_box.php'; ?>
 
 <!-- shared capture-once fields -->
 <div class="shared-box">
@@ -21,19 +24,25 @@
 
 <div class="tabs" id="activity">
   <div class="tab active" data-tab="services" onclick="tab(this)">Services <span class="tag" style="margin-left:4px"><?= count($assigned) ?></span></div>
+  <div class="tab" data-tab="payments" onclick="tab(this)">Payments <span class="tag" style="margin-left:4px"><?= count($history) ?></span></div>
+  <?php if (can('invoices.manage')): ?><div class="tab" data-tab="invoices" onclick="tab(this)">Invoices <span class="tag" style="margin-left:4px"><?= count($invoices) ?></span></div><?php endif; ?>
   <div class="tab" data-tab="activity" onclick="tab(this)">Activity <span class="tag" style="margin-left:4px"><?= count($activities) ?></span></div>
   <div class="tab" data-tab="profile" onclick="tab(this)">Profile</div>
   <div class="tab" data-tab="documents" onclick="tab(this)">Documents <span class="tag" style="margin-left:4px"><?= count($documents) ?></span></div>
 </div>
 
+<?php ob_start(); ?>
+<?php $isAdvance = $outstanding < -0.004; ?>
+<div class="grid grid--4" style="margin-bottom:18px">
+  <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px"><?= money($billed) ?></div><div class="stat__label">Total Billed</div></div>
+  <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--success)"><?= money($received) ?></div><div class="stat__label">Received</div></div>
+  <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--warning-fg)"><?= money($discount) ?></div><div class="stat__label">Discount / Written off</div></div>
+  <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:<?= $isAdvance ? 'var(--success)' : ($outstanding > 0.004 ? 'var(--danger)' : 'var(--success)') ?>"><?= money(abs($outstanding)) ?></div><div class="stat__label"><?= $isAdvance ? 'Advance (paid ahead)' : 'Outstanding' ?></div></div>
+</div>
+<?php $statsHtml = ob_get_clean(); ?>
 <!-- ===== Services tab ===== -->
 <div data-pane="services">
-  <div class="grid grid--4" style="margin-bottom:18px">
-    <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px"><?= money($billed) ?></div><div class="stat__label">Total Billed</div></div>
-    <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--success)"><?= money($received) ?></div><div class="stat__label">Received</div></div>
-    <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--danger)"><?= money($pending) ?></div><div class="stat__label">Outstanding</div></div>
-    <div class="stat" style="padding:14px 16px"><div class="stat__val" style="font-size:20px"><?= count($assigned) ?></div><div class="stat__label">Active Services</div></div>
-  </div>
+  <?php echo $statsHtml; ?>
 
   <?php if (!$assigned): ?>
     <div class="card"><div class="empty" style="padding:48px">
@@ -44,26 +53,45 @@
 
   <?php foreach ($services as $s): if (!in_array((int)$s['id'], $assigned, true)) continue; $code = $s['code']; $jobs = $grouped[$code] ?? []; ?>
     <div class="card" style="margin-bottom:18px">
+      <?php $stp = $stopped[(int)$s['id']] ?? null; ?>
       <div class="card__head">
-        <h3><?= e($s['name']) ?></h3>
-        <?php if (can('services.edit')): ?><a href="<?= url('/customers/'.$c['id'].'/jobs/'.str_replace('_','-',$code).'/create') ?>" class="btn btn--primary btn--sm">+ New Job</a><?php endif; ?>
+        <h3><?= e($s['name']) ?> <?php if ($stp): ?><span class="pill pill--gray" style="margin-left:6px">Stopped · <?= date_h($stp['stopped_on']) ?></span><?php endif; ?></h3>
+        <div class="flex gap-8 items-center">
+          <?php if ($stp): ?>
+            <?php if (can('customers.edit')): ?>
+              <form method="post" action="<?= url('/customers/'.$c['id'].'/services/'.$s['id'].'/resume') ?>" style="display:inline" onsubmit="return confirm('Resume <?= e($s['name']) ?>? Automatic jobs will start again from the next period.')">
+                <?= csrf_field() ?><button class="btn btn--outline btn--sm">Resume service</button></form>
+            <?php endif; ?>
+          <?php else: ?>
+            <?php if (can('customers.edit')): ?><button type="button" class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" onclick="openStop(<?= (int)$s['id'] ?>, '<?= e(addslashes($s['name'])) ?>')">Stop service</button><?php endif; ?>
+            <?php if (can('services.edit')): ?><a href="<?= url('/customers/'.$c['id'].'/jobs/'.str_replace('_','-',$code).'/create') ?>" class="btn btn--primary btn--sm">+ New Job</a><?php endif; ?>
+          <?php endif; ?>
+        </div>
       </div>
+      <?php if ($stp): ?>
+        <div class="alert alert--info" style="margin:0;border-radius:0;border-left:0;border-right:0"><b>Stopped.</b> Reason: <?= e($stp['stop_reason']) ?>. No automatic jobs are created and open jobs were marked Discontinued. Any outstanding amount stays on the customer's account.</div>
+      <?php endif; ?>
       <div class="table-wrap">
         <table class="tbl">
-          <thead><tr><th>Sub-type / Detail</th><th>Period / FY</th><th>Due</th><th>Status</th><th>Fee</th><th>Received</th><th>Balance</th><th></th><th></th></tr></thead>
+          <thead><tr><th>Sub-type / Detail</th><th>Period / FY</th><th>Due</th><th>Status</th><th>Fee</th><th></th></tr></thead>
           <tbody>
-          <?php if (!$jobs): ?><tr><td colspan="8" class="muted" style="padding:18px;text-align:center">No jobs yet.</td></tr>
-          <?php else: foreach ($jobs as $j): $bal = (float)$j['fees_amount'] - (float)$j['received']; ?>
+          <?php if (!$jobs): ?><tr><td colspan="6" class="muted" style="padding:18px;text-align:center">No jobs yet.</td></tr>
+          <?php else: foreach ($jobs as $j): ?>
             <tr>
-              <td class="cell-strong"><?= e($j['sub_type'] ? strtoupper($j['sub_type']) : ($j['title'] ?: $s['name'])) ?></td>
+              <td class="cell-strong"><?= e($j['sub_type'] ? strtoupper($j['sub_type']) : ($j['title'] ?: $s['name'])) ?><?= e(job_kind_label($j)) ?></td>
               <td class="mono"><?= e($j['period_label'] ?: $j['financial_year'] ?: '—') ?></td>
-              <td><?= $j['due_date']?due_pill($j['due_date']):'—' ?></td>
+              <td><?= $j['due_date']?due_pill($j['due_date']):'—' ?><?= !empty($j['due_date_2']) ? '<div style="margin-top:3px">'.due_pill($j['due_date_2']).'</div>' : '' ?></td>
               <td><?= $j['status_name']?status_pill($j['status_name']):'<span class="pill pill--gray">—</span>' ?></td>
               <td class="mono"><?= money($j['fees_amount']) ?></td>
-              <td class="mono"><?= money($j['received']) ?></td>
-              <td class="mono" style="color:<?= $bal>0?'var(--danger)':'var(--success)' ?>"><?= money(max(0,$bal)) ?></td>
-              <td class="text-right"><a href="<?= url('/jobs/'.$j['id'].'/edit') ?>" class="btn btn--light btn--sm">Open</a></td>
-              <td><?php if (can('services.edit')): ?><a href="<?= url('/jobs/'.$j['id'].'/copy') ?>" class="btn btn--outline btn--sm" title="Copy for next financial year">Renew</a><?php endif; ?></td>
+              <td class="text-right" style="white-space:nowrap">
+                <a href="<?= url('/jobs/'.$j['id'].'/edit') ?>" class="btn btn--light btn--sm">Open</a>
+                <?php if (can('services.edit')): ?>
+                  <form method="post" action="<?= url('/jobs/'.$j['id'].'/delete') ?>" style="display:inline" onsubmit="return confirm('Delete this job? This cannot be undone.')">
+                    <?= csrf_field() ?>
+                    <button class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5">Delete</button>
+                  </form>
+                <?php endif; ?>
+              </td>
             </tr>
           <?php endforeach; endif; ?>
           </tbody>
@@ -72,6 +100,72 @@
     </div>
   <?php endforeach; ?>
 </div>
+
+<!-- ===== Payments tab ===== -->
+<div data-pane="payments" style="display:none" id="paymentsPane">
+  <?php echo $statsHtml; ?>
+  <div class="flex gap-8" style="margin-bottom:14px;flex-wrap:wrap">
+    <?php if (can('payments.record')): ?><button class="btn btn--primary" onclick="openPay()">Receive Payment</button><?php endif; ?>
+    <?php if (can('payments.discount')): ?><button class="btn btn--outline" onclick="document.getElementById('discModal').style.display='grid'">Give Discount / Write-off</button><?php endif; ?>
+  </div>
+  <div class="card">
+    <div class="card__head"><h3>Payment &amp; discount history</h3></div>
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Type</th><th>Mode</th><th>Amount</th><th>Comment</th><th>By</th><th></th></tr></thead>
+        <tbody>
+        <?php if (!$history): ?><tr><td colspan="7" class="muted" style="padding:22px;text-align:center">Nothing recorded yet. Use “Receive Payment” when the customer pays.</td></tr>
+        <?php else: foreach ($history as $h): $isDisc = $h['kind'] === 'discount'; ?>
+          <tr>
+            <td><?= date_h($h['date']) ?></td>
+            <td><span class="pill pill--<?= $isDisc ? 'amber' : 'green' ?>"><?= $isDisc ? 'Discount' : 'Payment' ?></span></td>
+            <td><?= $isDisc ? '—' : e(pay_mode_label($h['mode'])) ?></td>
+            <td class="mono cell-strong" style="color:<?= $isDisc ? 'var(--warning-fg)' : 'var(--success)' ?>"><?= money($h['amount']) ?></td>
+            <td class="small"><?= $h['remarks'] ? nl2br(e($h['remarks'])) : '<span class="muted">—</span>' ?></td>
+            <td class="cell-sub"><?= e($h['by'] ?: '—') ?></td>
+            <td class="text-right">
+              <?php if (can('payments.record') && (!$isDisc || can('payments.discount'))): ?>
+                <form method="post" action="<?= url($h['source'] === 'ledger' ? '/ledger/'.$h['id'].'/delete' : '/payments/'.$h['id'].'/delete') ?>" style="display:inline" onsubmit="return confirm('Remove this entry? The totals will update.')">
+                  <?= csrf_field() ?><button class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;padding:2px 8px" title="Remove">✕</button>
+                </form>
+              <?php endif; ?>
+            </td>
+          </tr>
+        <?php endforeach; endif; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<?php if (can('invoices.manage')): ?>
+<!-- ===== Invoices tab ===== -->
+<div data-pane="invoices" style="display:none">
+  <div class="flex gap-8" style="margin-bottom:14px"><a class="btn btn--primary" href="<?= url('/customers/'.$c['id'].'/invoices/new') ?>">+ Create Invoice</a></div>
+  <div class="card">
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr><th>Bill No</th><th>Date</th><th>Total</th><th></th></tr></thead>
+        <tbody>
+        <?php if (!$invoices): ?><tr><td colspan="4" class="muted" style="padding:22px;text-align:center">No invoices yet. Click “Create Invoice”, tick the jobs to bill and print it.</td></tr>
+        <?php else: foreach ($invoices as $iv): ?>
+          <tr>
+            <td class="mono cell-strong"><a href="<?= url('/invoices/'.$iv['id']) ?>"><?= e($iv['invoice_no']) ?></a><?= !empty($iv['group_id']) ? ' <span class="pill pill--sky">Group</span>' : '' ?></td>
+            <td><?= date_h($iv['invoice_date']) ?></td>
+            <td class="mono cell-strong"><?= money($iv['total']) ?></td>
+            <td class="text-right" style="white-space:nowrap">
+              <a class="btn btn--light btn--sm" href="<?= url('/invoices/'.$iv['id']) ?>">View / Print</a>
+              <form method="post" action="<?= url('/invoices/'.$iv['id'].'/delete') ?>" style="display:inline" onsubmit="return confirm('Delete invoice <?= e($iv['invoice_no']) ?>? This cannot be undone.')">
+                <?= csrf_field() ?><button class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5">Delete</button></form>
+            </td>
+          </tr>
+        <?php endforeach; endif; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 
 <!-- ===== Activity tab ===== -->
 <div data-pane="activity" style="display:none">
@@ -187,6 +281,75 @@
   </div>
 </div>
 
+<?php if (can('payments.record')): ?>
+<!-- Receive payment modal -->
+<div class="modal-backdrop" id="payModal" style="display:none">
+  <form method="post" action="<?= url('/customers/'.$c['id'].'/payments') ?>" class="modal">
+    <?= csrf_field() ?>
+    <div class="modal__head"><h3>Receive Payment</h3><button type="button" class="icon-btn" onclick="document.getElementById('payModal').style.display='none'">✕</button></div>
+    <div class="modal__body">
+      <p class="muted small" style="margin-bottom:12px">Outstanding now: <b class="mono"><?= $isAdvance ? '₹0 (advance '.money(abs($outstanding)).')' : money($outstanding) ?></b> — recorded against the customer's total, not a single job.</p>
+      <div class="form-grid">
+        <div class="field"><label>Amount received <span class="req">*</span></label><input class="input mono" type="number" step="0.01" min="0.01" name="amount" id="payAmount" required></div>
+        <div class="field"><label>Date</label><input class="input" type="date" name="entry_date" value="<?= date('Y-m-d') ?>"></div>
+        <div class="field" style="grid-column:span 2"><label>Collected by <span class="req">*</span></label>
+          <div class="select-wrap"><select class="select" name="payment_mode" required>
+            <?php foreach ($payModes as $mk => $ml): ?><option value="<?= e($mk) ?>"><?= e($ml) ?></option><?php endforeach; ?>
+          </select></div></div>
+        <div class="field" style="grid-column:span 2"><label>Comment</label><textarea class="input" name="remarks" rows="2" placeholder="e.g. UPI ref, paid by son, part payment…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button type="button" class="btn btn--light" onclick="document.getElementById('payModal').style.display='none'">Cancel</button>
+      <button class="btn btn--primary">Save payment</button>
+    </div>
+  </form>
+</div>
+<?php endif; ?>
+<?php if (can('payments.discount')): ?>
+<!-- Discount / write-off modal -->
+<div class="modal-backdrop" id="discModal" style="display:none">
+  <form method="post" action="<?= url('/customers/'.$c['id'].'/discounts') ?>" class="modal">
+    <?= csrf_field() ?>
+    <div class="modal__head"><h3>Discount / Write-off</h3><button type="button" class="icon-btn" onclick="document.getElementById('discModal').style.display='none'">✕</button></div>
+    <div class="modal__body">
+      <p class="muted small" style="margin-bottom:12px">Reduces the amount owed without any money received. Cannot be more than the outstanding (<b class="mono"><?= money(max(0, $outstanding)) ?></b>).</p>
+      <div class="form-grid">
+        <div class="field"><label>Discount amount <span class="req">*</span></label><input class="input mono" type="number" step="0.01" min="0.01" name="amount" required></div>
+        <div class="field"><label>Date</label><input class="input" type="date" name="entry_date" value="<?= date('Y-m-d') ?>"></div>
+        <div class="field" style="grid-column:span 2"><label>Remark <span class="req">*</span> <span class="muted small">(why is this written off?)</span></label><textarea class="input" name="remarks" rows="2" required></textarea></div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button type="button" class="btn btn--light" onclick="document.getElementById('discModal').style.display='none'">Cancel</button>
+      <button class="btn btn--primary">Save discount</button>
+    </div>
+  </form>
+</div>
+<?php endif; ?>
+
+<?php if (can('customers.edit')): ?>
+<!-- Stop service modal -->
+<div class="modal-backdrop" id="stopModal" style="display:none">
+  <form method="post" id="stopForm" action="" class="modal">
+    <?= csrf_field() ?>
+    <div class="modal__head"><h3 id="stopTitle">Stop service</h3><button type="button" class="icon-btn" onclick="document.getElementById('stopModal').style.display='none'">✕</button></div>
+    <div class="modal__body">
+      <p class="muted small" style="margin-bottom:12px">All <b>open jobs</b> of this service are marked <b>Discontinued</b> and leave the Work Board, and <b>no more jobs are created automatically</b>.
+        Completed jobs and history are kept. <b>Outstanding money is not written off</b> — collect it, or use “Give Discount / Write-off” on the Payments tab.</p>
+      <div class="form-grid">
+        <div class="field"><label>Stopped from</label><input class="input" type="date" name="stopped_on" value="<?= date('Y-m-d') ?>"></div>
+        <div class="field" style="grid-column:span 2"><label>Reason <span class="req">*</span></label><textarea class="input" name="reason" rows="2" required placeholder="e.g. Customer left, moved to another CA, business closed…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button type="button" class="btn btn--light" onclick="document.getElementById('stopModal').style.display='none'">Cancel</button>
+      <button class="btn btn--primary" style="background:#dc2626;border-color:#dc2626">Stop service</button>
+    </div>
+  </form>
+</div>
+<?php endif; ?>
+
 <!-- Manage services modal -->
 <div class="modal-backdrop" id="svcModal" style="display:none">
   <form method="post" action="<?= url('/customers/'.$c['id'].'/services') ?>" class="modal">
@@ -214,6 +377,17 @@ function tab(el){
   document.querySelectorAll('[data-pane]').forEach(p=>p.style.display='none');
   document.querySelector('[data-pane="'+el.dataset.tab+'"]').style.display='';
 }
+function openStop(serviceId, name){
+  document.getElementById('stopForm').action = '<?= url('/customers/'.$c['id'].'/services/') ?>' + serviceId + '/stop';
+  document.getElementById('stopTitle').textContent = 'Stop ' + name;
+  document.getElementById('stopModal').style.display = 'grid';
+}
+function openPay(){
+  var el = document.querySelector('.tab[data-tab="payments"]'); if (el) tab(el);
+  var m = document.getElementById('payModal'); if (m) { m.style.display = 'grid'; var a = document.getElementById('payAmount'); if (a) a.focus(); }
+}
+// ?pay=1 (e.g. from the group page) opens the payment form straight away
+if (/[?&]pay=1\b/.test(location.search)) { window.addEventListener('load', openPay); }
 // Auto-open tab from URL hash
 (function(){
   var hash = location.hash.replace('#','');

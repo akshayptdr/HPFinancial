@@ -11,6 +11,7 @@ use App\Models\LeadActivity;
 use App\Models\LeadType;
 use App\Models\LeadCategory;
 use App\Models\Customer;
+use App\Models\Family;
 use App\Models\CustomerService;
 use App\Models\Service;
 use App\Models\User;
@@ -70,6 +71,7 @@ class LeadController extends Controller
         $this->view('leads/detail', array_merge($this->nav(), [
             'pageTitle' => $lead['name'], 'activeNav' => 'leads',
             'lead' => $lead,
+            'familyBox' => Family::boxFor('lead', $lead),
             'customer' => $customer,
             'activities' => LeadActivity::forLead((int)$id),
             'employees' => User::activeList(),
@@ -132,6 +134,18 @@ class LeadController extends Controller
             'assigned_to' => $lead['assigned_to'] ?: Auth::id(), 'created_by' => Auth::id(),
         ]);
 
+        // Carry the lead's family over to the new customer
+        if (!empty($lead['family_id'])) {
+            Customer::update($cid, ['family_id' => $lead['family_id']]);
+            $fam = Family::find($lead['family_id']);
+            if ($fam) {
+                $fu = [];
+                if ($fam['contact_type'] === 'lead' && (int)$fam['contact_id'] === (int)$id) { $fu['contact_type'] = 'customer'; $fu['contact_id'] = (int)$cid; }
+                if (empty($fam['payer_customer_id'])) $fu['payer_customer_id'] = (int)$cid;
+                if ($fu) Family::update($fam['id'], $fu);
+            }
+        }
+
         // Auto-assign services matching the lead's interested categories
         $catRows  = Lead::getCategories((int)$id);
         $catIds   = array_column($catRows, 'category_id');
@@ -156,6 +170,37 @@ class LeadController extends Controller
         ActivityLog::record('converted', 'lead', (int)$id, "customer #$cid");
         Session::flash('success', 'Lead converted to customer. Services pre-assigned from lead categories.');
         $this->redirect('/customers/' . $cid);
+    }
+
+    /**
+     * Delete a lead (admins only). Its activities and category links go with it. If it was converted, the customer is
+     * kept and simply loses its link to the lead. If it was the contact person of a family, the family moves on to
+     * another member.
+     */
+    public function destroy(string $id): void
+    {
+        $lead = Lead::find($id);
+        if (!$lead) $this->redirect('/leads');
+        if (!Auth::isAdmin()) {
+            Session::flash('error', 'Only an admin can delete a lead.');
+            $this->redirect('/leads/' . $id);
+        }
+        $customer = Customer::firstWhere('lead_id', $id);
+        if ($customer) Customer::update($customer['id'], ['lead_id' => null]);
+
+        if (!empty($lead['family_id'])) {
+            $fam = Family::find($lead['family_id']);
+            if ($fam && $fam['contact_type'] === 'lead' && (int)$fam['contact_id'] === (int)$id) {
+                $members = Family::customers((int)$fam['id']);
+                Family::update($fam['id'], $members
+                    ? ['contact_type' => 'customer', 'contact_id' => (int)$members[0]['id']]
+                    : ['contact_type' => null, 'contact_id' => null]);
+            }
+        }
+        Lead::delete($id);
+        ActivityLog::record('deleted', 'lead', (int)$id, $lead['name']);
+        Session::flash('success', 'Lead "' . $lead['name'] . '" deleted.' . ($customer ? ' Its customer record was kept.' : ''));
+        $this->redirect('/leads');
     }
 
     public function masters(): void
@@ -196,6 +241,7 @@ class LeadController extends Controller
             'address'        => Request::input('address') ?: null,
             'referred_by'    => Request::input('referred_by') ?: null,
             'contact_person' => Request::input('contact_person') ?: null,
+            'contact_person_mobile' => Request::input('contact_person_mobile') ?: null,
             'follow_up_date' => Request::input('follow_up_date') ?: null,
             'notes'          => Request::input('notes') ?: null,
         ];

@@ -28,7 +28,7 @@
         <?php else: foreach ($dueSoon as $j): ?>
           <tr>
             <td class="cell-strong"><a href="<?= url('/jobs/'.$j['id'].'/edit') ?>"><?= e($j['firm_name'] ?: $j['customer_name']) ?></a></td>
-            <td><?= e(ucwords(str_replace('_',' ',$j['service_code']))) ?><?= $j['sub_type']?' · '.e(strtoupper($j['sub_type'])):'' ?></td>
+            <td><?= e(ucwords(str_replace('_',' ',$j['service_code']))) ?><?= $j['sub_type']?' · '.e(strtoupper($j['sub_type'])):'' ?><?= e(job_kind_label($j)) ?></td>
             <td class="mono"><?= e($j['period_label'] ?: '—') ?></td>
             <td><?= due_pill($j['due_date']) ?></td>
             <td><?= $j['status_name'] ? status_pill($j['status_name']) : '<span class="pill pill--gray">—</span>' ?></td>

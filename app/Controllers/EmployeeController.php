@@ -38,7 +38,7 @@ class EmployeeController extends Controller
             'mobile'   => $mobile,
             'email'    => trim((string)Request::input('email')) ?: null,
             'password_hash' => password_hash($pwd, PASSWORD_BCRYPT),
-            'role_id'  => Request::input('type') === 'admin' ? 1 : 2,
+            'role_id'  => self::roleId(),
             'status'   => Request::input('status') === 'inactive' ? 'inactive' : 'active',
             'must_change_password' => 1,
             'created_by' => Auth::id(),
@@ -56,7 +56,7 @@ class EmployeeController extends Controller
             'name'   => trim((string)Request::input('name')) ?: $u['name'],
             'mobile' => preg_replace('/\s+/', '', (string)Request::input('mobile')) ?: $u['mobile'],
             'email'  => trim((string)Request::input('email')) ?: null,
-            'role_id'=> Request::input('type') === 'admin' ? 1 : 2,
+            'role_id'=> self::roleId(),
         ]);
         ActivityLog::record('updated', 'employee', (int)$id);
         Session::flash('success', 'Employee updated.');
@@ -84,6 +84,14 @@ class EmployeeController extends Controller
             Session::flash('success', "Password reset for {$u['name']}. New temporary password: $pwd");
         }
         $this->redirect('/employees');
+    }
+
+    /** Map the submitted Employee Type to a role id (admin / manager / employee). */
+    private static function roleId(): int
+    {
+        $type = (string) Request::input('type');
+        $role = in_array($type, ['admin', 'manager'], true) ? \App\Models\Role::firstWhere('slug', $type) : null;
+        return $role ? (int)$role['id'] : 2;
     }
 
     private static function genPassword(): string

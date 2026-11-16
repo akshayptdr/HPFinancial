@@ -43,6 +43,11 @@ $act    = $isEdit ? url('/leads/'.$lead['id']) : url('/leads');
         </div>
 
         <div class="field">
+          <label>Contact Person Mobile</label>
+          <input class="input" name="contact_person_mobile" value="<?= e($lead['contact_person_mobile']??'') ?>" placeholder="Mobile number">
+        </div>
+
+        <div class="field">
           <label>Follow-up Date</label>
           <input class="input" type="date" name="follow_up_date" value="<?= e($lead['follow_up_date']??'') ?>">
         </div>

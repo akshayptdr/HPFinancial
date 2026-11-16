@@ -6,6 +6,11 @@
     <?php if (!$isWon && can('leads.edit')): ?>
       <a href="<?= url('/leads/'.$lead['id'].'/edit') ?>" class="btn btn--light">Edit</a>
     <?php endif; ?>
+    <?php if (\App\Core\Auth::isAdmin()): ?>
+      <form method="post" action="<?= url('/leads/'.$lead['id'].'/delete') ?>" style="display:inline"
+            onsubmit="return confirm('<?= $isWon ? 'Delete this lead? Its customer record will be kept.' : 'Delete this lead and its activity history? This cannot be undone.' ?>')"><?= csrf_field() ?>
+        <button class="btn" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5">Delete</button></form>
+    <?php endif; ?>
     <?php if ($isWon && $customer): ?>
       <a href="<?= url('/customers/'.$customer['id']) ?>" class="btn btn--primary">View Customer Profile</a>
     <?php elseif (!$isWon && can('customers.create')): ?>
@@ -21,6 +26,8 @@
 </div>
 <?php endif; ?>
 
+<?php include APP_PATH . '/Views/families/_box.php'; ?>
+
 <div class="grid" style="grid-template-columns:1fr 1.4fr">
   <div style="display:flex;flex-direction:column;gap:18px">
     <div class="card">
@@ -31,6 +38,7 @@
           <div><div class="cell-sub">Lead Type</div><div class="cell-strong"><?= e($lead['type_name'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Interested In</div><div class="cell-strong"><?= e($lead['category_names'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Contact Person</div><div class="cell-strong"><?= e($lead['contact_person'] ?: '—') ?></div></div>
+          <div><div class="cell-sub">Contact Person Mobile</div><div class="cell-strong"><?= e($lead['contact_person_mobile'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Referred By</div><div class="cell-strong"><?= e($lead['referred_by'] ?: '—') ?></div></div>
           <div><div class="cell-sub">Follow-up</div><div><?= $lead['follow_up_date']?due_pill($lead['follow_up_date']):'—' ?></div></div>
           <div class="col-span-2" style="grid-column:span 2"><div class="cell-sub">Address</div>

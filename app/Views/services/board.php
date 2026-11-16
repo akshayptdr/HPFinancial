@@ -7,7 +7,7 @@
       <input class="input" id="boardSearch" name="q" value="<?= e($f['q']??'') ?>" placeholder="Search customer…" style="width:180px" autocomplete="off">
       <div class="select-wrap"><select class="select" name="service"><option value="">All Services</option>
         <?php foreach ($services as $s): ?><option value="<?= e($s['code']) ?>" <?= ($f['service']??'')==$s['code']?'selected':'' ?>><?= e($s['name']) ?></option><?php endforeach; ?></select></div>
-      <div class="select-wrap"><select class="select" name="status"><option value="">All Statuses</option>
+      <div class="select-wrap"><select class="select" name="status"><option value="">Open jobs (not completed)</option>
         <?php foreach ($fileStatuses as $fs): ?><option value="<?= $fs['id'] ?>" <?= ($f['status']??'')==$fs['id']?'selected':'' ?>><?= e($fs['name']) ?></option><?php endforeach; ?></select></div>
       <div class="select-wrap"><select class="select" name="financial_year"><option value="">All Years</option>
         <?php for($fy=2040;$fy>=2018;$fy--):$fyLabel=$fy.'-'.str_pad(($fy+1)%100,2,'0',STR_PAD_LEFT); ?>
@@ -30,18 +30,17 @@
 </script>
   <div class="table-wrap">
     <table class="tbl">
-      <thead><tr><th>Customer</th><th>Service · Job</th><th>Period</th><th>Due</th><th>Assignee</th><th>Status</th><th>Balance</th><th></th></tr></thead>
+      <thead><tr><th>Customer</th><th>Service · Job</th><th>Period</th><th>Due</th><th>Assignee</th><th>Status</th><th></th></tr></thead>
       <tbody>
-      <?php if (!$jobs): ?><tr><td colspan="8" class="empty" style="padding:36px">No jobs found.</td></tr>
-      <?php else: foreach ($jobs as $j): $bal=(float)$j['fees_amount']-(float)$j['received']; $od = $j['due_date'] && strtotime($j['due_date'])<strtotime('today') && $j['status_name']!=='Completed'; ?>
+      <?php if (!$jobs): ?><tr><td colspan="7" class="empty" style="padding:36px">No jobs found.</td></tr>
+      <?php else: foreach ($jobs as $j): $od = (($j['due_date'] && strtotime($j['due_date'])<strtotime('today')) || (!empty($j['due_date_2']) && strtotime($j['due_date_2'])<strtotime('today'))) && !in_array($j['status_name'], ['Completed','Discontinued'], true); ?>
         <tr style="<?= $od?'background:#fff7f7':'' ?>">
           <td class="cell-strong"><a href="<?= url('/customers/'.$j['customer_id']) ?>"><?= e($j['firm_name'] ?: $j['customer_name']) ?></a></td>
-          <td><?= e($j['service_name']) ?><?= $j['sub_type']?' · '.e(strtoupper($j['sub_type'])):'' ?></td>
+          <td><?= e($j['service_name']) ?><?= $j['sub_type']?' · '.e(strtoupper($j['sub_type'])):'' ?><?= e(job_kind_label($j)) ?></td>
           <td class="mono"><?= e($j['period_label'] ?: $j['financial_year'] ?: '—') ?></td>
-          <td><?= $j['due_date']?due_pill($j['due_date']):'—' ?></td>
+          <td><?= $j['due_date']?due_pill($j['due_date']):'—' ?><?= !empty($j['due_date_2']) ? '<div style="margin-top:3px">'.due_pill($j['due_date_2']).'</div>' : '' ?></td>
           <td><?= $j['assignee_name']?'<span class="avatar-sm">'.e(initials($j['assignee_name'])).'</span>':'—' ?></td>
           <td><?= $j['status_name']?status_pill($j['status_name']):'<span class="pill pill--gray">—</span>' ?></td>
-          <td class="mono" style="color:<?= $bal>0?'var(--danger)':'var(--success)' ?>"><?= money(max(0,$bal)) ?></td>
           <td class="text-right"><a href="<?= url('/jobs/'.$j['id'].'/edit') ?>" class="btn btn--light btn--sm">Open</a></td>
         </tr>
       <?php endforeach; endif; ?>

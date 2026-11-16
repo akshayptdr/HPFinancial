@@ -147,6 +147,8 @@ CREATE TABLE customer_services (
   service_id BIGINT UNSIGNED NOT NULL,
   status ENUM('active','inactive') NOT NULL DEFAULT 'active',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  stopped_on DATE NULL,                       -- service stopped for this customer: no automatic jobs
+  stop_reason VARCHAR(255) NULL,
   UNIQUE KEY uq_cust_service (customer_id, service_id),
   FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -196,15 +198,21 @@ CREATE TABLE service_jobs (
   financial_year VARCHAR(9) NULL,
   period_label VARCHAR(30) NULL,
   due_date DATE NULL,
+  due_date_2 DATE NULL,                       -- second due date (GSTR-3B of a combined GSTR-1 & 3B return)
   filing_date DATE NULL,
+  completed_on DATE NULL,                     -- set automatically when the job is marked Completed
   file_status_id BIGINT UNSIGNED NULL,
   fees_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
   comment TEXT NULL,
   data JSON NULL,                             -- service-specific scalar fields
   assigned_to BIGINT UNSIGNED NULL,
   created_by BIGINT UNSIGNED NULL,
+  renewed_from_job_id BIGINT UNSIGNED NULL,   -- set on auto-created next-year ITR/TDS jobs
+  auto_key VARCHAR(40) NULL,                  -- e.g. 'tds_24g:2026-04' for auto-created Form 24G jobs
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE INDEX uq_job_renewed_from (renewed_from_job_id),
+  UNIQUE INDEX uq_job_auto_key (customer_id, auto_key),
   FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
   FOREIGN KEY (file_status_id) REFERENCES file_statuses(id),
   FOREIGN KEY (assigned_to) REFERENCES users(id),
@@ -295,6 +303,137 @@ CREATE TABLE activity_log (
   detail VARCHAR(255) NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX(entity, entity_id), INDEX(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ===== Families & family payment receipts =====
+DROP TABLE IF EXISTS payment_receipts;
+DROP TABLE IF EXISTS families;
+
+CREATE TABLE payment_receipts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  family_id BIGINT UNSIGNED NOT NULL,
+  payer_customer_id BIGINT UNSIGNED NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  payment_mode ENUM('cash','bank') NOT NULL,
+  received_date DATE NOT NULL,
+  remarks VARCHAR(255) NULL,
+  recorded_by BIGINT UNSIGNED NOT NULL,
+  recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX(family_id), INDEX(received_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE families (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  contact_type ENUM('customer','lead') NULL,
+  contact_id BIGINT UNSIGNED NULL,
+  payer_customer_id BIGINT UNSIGNED NULL,
+  notes VARCHAR(255) NULL,
+  created_by BIGINT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE customers ADD COLUMN family_id BIGINT UNSIGNED NULL, ADD INDEX idx_customers_family (family_id);
+ALTER TABLE leads     ADD COLUMN family_id BIGINT UNSIGNED NULL, ADD INDEX idx_leads_family (family_id);
+ALTER TABLE service_payments ADD COLUMN receipt_id BIGINT UNSIGNED NULL, ADD INDEX idx_sp_receipt (receipt_id);
+
+ALTER TABLE customers ADD CONSTRAINT fk_customers_family FOREIGN KEY (family_id) REFERENCES families(id) ON DELETE SET NULL;
+ALTER TABLE leads     ADD CONSTRAINT fk_leads_family     FOREIGN KEY (family_id) REFERENCES families(id) ON DELETE SET NULL;
+ALTER TABLE payment_receipts ADD CONSTRAINT fk_pr_family FOREIGN KEY (family_id) REFERENCES families(id) ON DELETE CASCADE;
+ALTER TABLE service_payments ADD CONSTRAINT fk_sp_receipt FOREIGN KEY (receipt_id) REFERENCES payment_receipts(id) ON DELETE CASCADE;
+
+-- ===== Customer-level payments & discounts =====
+DROP TABLE IF EXISTS customer_ledger;
+CREATE TABLE customer_ledger (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  customer_id BIGINT UNSIGNED NOT NULL,
+  entry_type ENUM('payment','discount') NOT NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  payment_mode ENUM('cash','upi','bank') NULL,
+  entry_date DATE NOT NULL,
+  remarks VARCHAR(255) NULL,
+  recorded_by BIGINT UNSIGNED NOT NULL,
+  recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (customer_id), INDEX (entry_date),
+  FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ===== Expenses & cash in hand =====
+DROP TABLE IF EXISTS expenses;
+CREATE TABLE expenses (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  expense_date DATE NOT NULL,
+  category VARCHAR(60) NOT NULL,
+  other_name VARCHAR(80) NULL,                 -- typed name when the category is "Other"
+  description VARCHAR(255) NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  recorded_by BIGINT UNSIGNED NOT NULL,
+  recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (expense_date), INDEX (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS cash_adjustments;
+CREATE TABLE cash_adjustments (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  entry_date DATE NOT NULL,
+  direction ENUM('in','out') NOT NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  remarks VARCHAR(255) NOT NULL,
+  recorded_by BIGINT UNSIGNED NOT NULL,
+  recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (entry_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ===== Employee attendance =====
+DROP TABLE IF EXISTS attendance;
+CREATE TABLE attendance (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  att_date DATE NOT NULL,
+  status ENUM('present','half','absent','leave') NOT NULL,
+  remarks VARCHAR(255) NULL,
+  marked_by BIGINT UNSIGNED NOT NULL,
+  marked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_att_user_day (user_id, att_date),
+  INDEX (att_date),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ===== Invoices =====
+DROP TABLE IF EXISTS invoice_items;
+DROP TABLE IF EXISTS invoices;
+CREATE TABLE invoices (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  invoice_no VARCHAR(20) NOT NULL,
+  fy_label VARCHAR(9) NOT NULL,
+  seq INT UNSIGNED NOT NULL,
+  customer_id BIGINT UNSIGNED NOT NULL,
+  group_id BIGINT UNSIGNED NULL,                -- set on a group invoice
+  invoice_date DATE NOT NULL,
+  total DECIMAL(12,2) NOT NULL,
+  notes VARCHAR(255) NULL,
+  share_token VARCHAR(40) NULL,                -- private link /i/<token> used to share the invoice
+  created_by BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_invoice_no (fy_label, seq),
+  UNIQUE KEY uq_invoice_share (share_token),
+  INDEX (customer_id), INDEX (invoice_date), INDEX (group_id),
+  FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
+  FOREIGN KEY (group_id) REFERENCES families(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE invoice_items (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  invoice_id BIGINT UNSIGNED NOT NULL,
+  job_id BIGINT UNSIGNED NULL,
+  member_name VARCHAR(120) NULL,                -- group invoices: whom the line is for
+  particulars VARCHAR(255) NOT NULL,
+  financial_year VARCHAR(9) NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  INDEX (invoice_id), INDEX (job_id),
+  FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS=1;

@@ -8,35 +8,13 @@
   </div>
 </div>
 
-<?php if ($type === 'fees'): ?>
-<div class="card" style="margin-bottom:18px">
-  <div class="card__body" style="padding-bottom:0">
-    <form method="get" class="filter-bar">
-      <div class="select-wrap"><select class="select" name="financial_year">
-        <option value="">All Years</option>
-        <?php for($fy=2040;$fy>=2018;$fy--):$fyLabel=$fy.'-'.str_pad(($fy+1)%100,2,'0',STR_PAD_LEFT); ?>
-          <option value="<?= $fyLabel ?>" <?= ($f['financial_year']??'')===$fyLabel?'selected':'' ?>><?= $fyLabel ?></option>
-        <?php endfor; ?>
-      </select></div>
-      <div class="select-wrap"><select class="select" name="service">
-        <option value="">All Services</option>
-        <?php foreach ($services as $s): ?><option value="<?= e($s['code']) ?>" <?= ($f['service']??'')===$s['code']?'selected':'' ?>><?= e($s['name']) ?></option><?php endforeach; ?>
-      </select></div>
-      <input class="input" type="date" name="date_from" value="<?= e($f['date_from']??'') ?>" placeholder="From date" style="width:auto">
-      <input class="input" type="date" name="date_to" value="<?= e($f['date_to']??'') ?>" placeholder="To date" style="width:auto">
-      <button class="btn btn--primary btn--sm">Filter</button>
-      <a href="<?= url('/reports/fees') ?>" class="btn btn--ghost btn--sm">Reset</a>
-    </form>
-  </div>
-</div>
-<?php endif; ?>
 
 <?php if ($totals): ?>
 <div class="grid grid--4" style="margin-bottom:18px">
   <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:22px"><?= money($totals['billed']) ?></div><div class="stat__label">Total Billed</div></div>
   <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:22px;color:var(--success)"><?= money($totals['collected']) ?></div><div class="stat__label">Collected</div></div>
-  <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:22px;color:var(--danger)"><?= money(max(0,$totals['outstanding'])) ?></div><div class="stat__label">Outstanding</div></div>
-  <div class="stat" style="padding:16px"><div class="stat__val" style="font-size:22px"><?= $totals['billed']>0?round($totals['collected']/$totals['billed']*100):0 ?>%</div><div class="stat__label">Collection Rate</div></div>
+  <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:22px;color:var(--warning-fg)"><?= money($totals['discount']) ?></div><div class="stat__label">Discount / Written off</div></div>
+  <div class="stat" style="padding:16px"><div class="stat__val mono" style="font-size:22px;color:var(--danger)"><?= money(max(0,$totals['outstanding'])) ?></div><div class="stat__label">Outstanding (to collect)</div></div>
 </div>
 <?php endif; ?>
 

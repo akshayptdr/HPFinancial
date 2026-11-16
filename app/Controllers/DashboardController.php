@@ -20,16 +20,19 @@ class DashboardController extends Controller
             'leads'     => (int) Model::scalar("SELECT COUNT(*) FROM leads WHERE 1=1" . ($isAdmin ? '' : " AND assigned_to=$uid")),
             'customers' => (int) Model::scalar("SELECT COUNT(*) FROM customers WHERE status='active'" . ($isAdmin ? '' : " AND assigned_to=$uid")),
         ];
-        $stats['collected'] = (float) Model::scalar(
+        $monthWhere = "MONTH(%s)=MONTH(CURDATE()) AND YEAR(%s)=YEAR(CURDATE())";
+        $collectedJobs = (float) Model::scalar(
             "SELECT COALESCE(SUM(p.amount),0) FROM service_payments p
              JOIN service_jobs j ON j.id=p.job_id
-             WHERE MONTH(p.received_date)=MONTH(CURDATE()) AND YEAR(p.received_date)=YEAR(CURDATE())"
+             WHERE " . sprintf($monthWhere, 'p.received_date', 'p.received_date')
             . ($isAdmin ? '' : " AND j.assigned_to=$uid"));
-        $stats['pending'] = (float) Model::scalar(
-            "SELECT COALESCE(SUM(j.fees_amount),0) - COALESCE((
-                SELECT SUM(p.amount) FROM service_payments p JOIN service_jobs jj ON jj.id=p.job_id
-                WHERE 1=1" . ($isAdmin ? '' : " AND jj.assigned_to=$uid") . "),0)
-             FROM service_jobs j WHERE 1=1" . ($isAdmin ? '' : " AND j.assigned_to=$uid"));
+        $collectedLedger = (float) Model::scalar(
+            "SELECT COALESCE(SUM(l.amount),0) FROM customer_ledger l
+             JOIN customers c ON c.id=l.customer_id
+             WHERE l.entry_type='payment' AND " . sprintf($monthWhere, 'l.entry_date', 'l.entry_date')
+            . ($isAdmin ? '' : " AND c.assigned_to=$uid"));
+        $stats['collected'] = $collectedJobs + $collectedLedger;
+        $stats['pending'] = \App\Models\Customer::outstandingTotal($isAdmin ? null : (int)$uid);
 
         $leadStages = $isAdmin ? Lead::countByStatus() : ['new'=>0,'contacted'=>0,'qualified'=>0,'won'=>0,'lost'=>0];
 
@@ -39,7 +42,7 @@ class DashboardController extends Controller
              FROM service_jobs j JOIN customers c ON c.id=j.customer_id
              LEFT JOIN file_statuses fs ON fs.id=j.file_status_id
              LEFT JOIN users u ON u.id=j.assigned_to
-             WHERE j.due_date IS NOT NULL AND IFNULL(fs.name,'')<>'Completed'
+             WHERE j.due_date IS NOT NULL AND IFNULL(fs.name,'') NOT IN ('Completed','Discontinued')
              AND j.due_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)"
              . ($isAdmin ? '' : " AND j.assigned_to=$uid") .
             " ORDER BY j.due_date ASC LIMIT 8");

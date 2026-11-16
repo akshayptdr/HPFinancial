@@ -42,7 +42,7 @@ Schedule once a day (Hostinger hPanel → Cron Jobs, or Windows Task Scheduler).
 - **Customers** — profile with shared capture-once fields (Firm/GST/PAN/Aadhaar), documents, service assignment.
 - **Services (10)** — config-driven job engine: Income Tax, GST, Accounting, Loan & Subsidy,
   Mutual Fund, Insurance, Government Department (encrypted portal credentials),
-  Certificate, Deeds & Agreement, Company Compliances. Shared **fees / part-payment** engine.
+  Certificate & Other Audit, LLP Compliances, Company Compliances. Shared **fees / part-payment** engine.
 - **Work Board** — firm-wide jobs with overdue/due-soon highlighting + filters.
 - **Dashboard / Reports / Notifications** — role-aware.
 

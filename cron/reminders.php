@@ -31,6 +31,11 @@ function notify(\PDO $pdo, ?int $uid, string $type, string $title, string $msg, 
         ->execute([$uid, $type, $title, $msg, $link]);
 }
 
+// --- Auto-create next year's ITR (2 months before due) and TDS (1st of due month) jobs ---
+$renewed = \App\Models\ServiceJob::generateRecurring();
+if ($renewed) echo "Recurring jobs auto-created: $renewed
+";
+
 // --- Service jobs due soon / overdue ---
 $jobs = $pdo->query("
     SELECT j.id, j.due_date, j.assigned_to, j.service_code, j.period_label,
@@ -38,9 +43,45 @@ $jobs = $pdo->query("
     FROM service_jobs j
     JOIN customers c ON c.id = j.customer_id
     LEFT JOIN file_statuses fs ON fs.id = j.file_status_id
-    WHERE j.due_date IS NOT NULL AND IFNULL(fs.name,'') <> 'Completed'
+    WHERE j.due_date IS NOT NULL AND IFNULL(fs.name,'') NOT IN ('Completed','Discontinued')
       AND j.due_date <= DATE_ADD(CURDATE(), INTERVAL $leadDays DAY)
 ")->fetchAll();
+
+// GST combined returns have a second due date (GSTR-3B) — remind on that one as well
+$jobs2 = $pdo->query("
+    SELECT j.id, j.due_date_2 AS due_date, j.assigned_to, j.service_code, j.period_label,
+           c.name AS customer_name, c.firm_name, fs.name AS status_name
+    FROM service_jobs j
+    JOIN customers c ON c.id = j.customer_id
+    LEFT JOIN file_statuses fs ON fs.id = j.file_status_id
+    WHERE j.service_code = 'gst' AND j.due_date_2 IS NOT NULL AND IFNULL(fs.name,'') NOT IN ('Completed','Discontinued')
+      AND j.due_date_2 <= DATE_ADD(CURDATE(), INTERVAL $leadDays DAY)
+")->fetchAll();
+// Mutual Fund account-opening task (its own due date and status)
+$jobs3 = $pdo->query("
+    SELECT j.id, JSON_UNQUOTE(JSON_EXTRACT(j.data,'$.account_open_due')) AS due_date, j.assigned_to, j.service_code,
+           'Account opening' AS period_label, c.name AS customer_name, c.firm_name, fs.name AS status_name
+    FROM service_jobs j
+    JOIN customers c ON c.id = j.customer_id
+    LEFT JOIN file_statuses fs ON fs.id = JSON_UNQUOTE(JSON_EXTRACT(j.data,'$.account_open_status_id'))
+    WHERE j.service_code = 'mutual_fund'
+      AND IFNULL(JSON_UNQUOTE(JSON_EXTRACT(j.data,'$.account_open')),'') = 'yes'
+      AND JSON_UNQUOTE(JSON_EXTRACT(j.data,'$.account_open_due')) IS NOT NULL
+      AND IFNULL(fs.name,'') NOT IN ('Completed','Discontinued')
+      AND JSON_UNQUOTE(JSON_EXTRACT(j.data,'$.account_open_due')) <= DATE_ADD(CURDATE(), INTERVAL $leadDays DAY)
+")->fetchAll();
+// LLP Annual Filing: Form 8 has its own due date and status
+$jobs4 = $pdo->query("
+    SELECT j.id, j.due_date_2 AS due_date, j.assigned_to, j.service_code, 'Form 8' AS period_label,
+           c.name AS customer_name, c.firm_name, fs.name AS status_name
+    FROM service_jobs j
+    JOIN customers c ON c.id = j.customer_id
+    LEFT JOIN file_statuses fs ON fs.id = JSON_UNQUOTE(JSON_EXTRACT(j.data,'$.form8_status_id'))
+    WHERE j.service_code = 'llp_compliance' AND j.sub_type = 'annual_filing' AND j.due_date_2 IS NOT NULL
+      AND IFNULL(fs.name,'') NOT IN ('Completed','Discontinued')
+      AND j.due_date_2 <= DATE_ADD(CURDATE(), INTERVAL $leadDays DAY)
+")->fetchAll();
+$jobs = array_merge($jobs, $jobs2, $jobs3, $jobs4);
 
 foreach ($jobs as $j) {
     if (ensureReminder($pdo, 'service_job', (int)$j['id'], $j['due_date'], date('Y-m-d'))) {

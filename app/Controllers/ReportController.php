@@ -25,22 +25,8 @@ class ReportController extends Controller
         $rows = []; $title = ucwords(str_replace('-', ' ', $type)); $cols = [];
         if ($type === 'fees') {
             $title = 'Fees / Collection';
-            $cols = ['Service','Billed','Collected','Outstanding'];
-            $where = ''; $p = [];
-            if (!empty($f['financial_year'])) { $where .= " AND j.financial_year = ?"; $p[] = $f['financial_year']; }
-            if (!empty($f['service']))        { $where .= " AND j.service_code = ?"; $p[] = $f['service']; }
-            if (!empty($f['date_from']))      { $where .= " AND j.created_at >= ?"; $p[] = $f['date_from']; }
-            if (!empty($f['date_to']))        { $where .= " AND j.created_at <= ?"; $p[] = $f['date_to'].' 23:59:59'; }
-            $rows = Model::query(
-                "SELECT s.name AS service,
-                    COALESCE(SUM(j.fees_amount),0) AS billed,
-                    COALESCE(SUM(ps.total),0) AS collected
-                 FROM service_jobs j
-                 JOIN services s ON s.code=j.service_code
-                 LEFT JOIN (SELECT job_id, SUM(amount) AS total FROM service_payments GROUP BY job_id) ps ON ps.job_id=j.id
-                 WHERE 1=1 $where
-                 GROUP BY j.service_code, s.name ORDER BY billed DESC", $p);
-            foreach ($rows as &$r) { $r['outstanding'] = (float)$r['billed'] - (float)$r['collected']; }
+            $cols = ['Customer','Billed','Collected','Discount','Outstanding'];
+            $rows = self::feesByCustomer();
         } elseif ($type === 'leads') {
             $title = 'Leads Report'; $cols = ['Status','Count'];
             $rows = Model::query("SELECT status, COUNT(*) c FROM leads GROUP BY status");
@@ -51,7 +37,7 @@ class ReportController extends Controller
         } elseif ($type === 'employees') {
             $title = 'Employee Performance'; $cols = ['Employee','Jobs','Fees Collected'];
             $rows = Model::query("SELECT u.name AS employee, COUNT(DISTINCT j.id) jobs,
-                COALESCE((SELECT SUM(p.amount) FROM service_payments p WHERE p.recorded_by=u.id),0) collected
+                COALESCE((SELECT SUM(p.amount) FROM service_payments p WHERE p.recorded_by=u.id),0) + COALESCE((SELECT SUM(l.amount) FROM customer_ledger l WHERE l.recorded_by=u.id AND l.entry_type='payment'),0) collected
                 FROM users u LEFT JOIN service_jobs j ON j.assigned_to=u.id GROUP BY u.id ORDER BY collected DESC");
         } else {
             $title = 'Service / Job Report'; $cols = ['Service','Jobs'];
@@ -62,9 +48,12 @@ class ReportController extends Controller
         // totals for fees
         $totals = null;
         if ($type === 'fees') {
-            $billed = array_sum(array_column($rows, 'billed'));
-            $collected = array_sum(array_column($rows, 'collected'));
-            $totals = ['billed'=>$billed,'collected'=>$collected,'outstanding'=>$billed-$collected];
+            $totals = [
+                'billed'      => array_sum(array_column($rows, 'billed')),
+                'collected'   => array_sum(array_column($rows, 'collected')),
+                'discount'    => array_sum(array_column($rows, 'discount')),
+                'outstanding' => array_sum(array_map(fn($r) => max(0, (float)$r['outstanding']), $rows)),
+            ];
         }
 
         $this->view('reports/show', array_merge($this->nav(), [
@@ -72,6 +61,22 @@ class ReportController extends Controller
             'type' => $type, 'title' => $title, 'cols' => $cols, 'rows' => $rows, 'totals' => $totals,
             'f' => $f, 'services' => Service::activeList(),
         ]));
+    }
+
+    /** One row per customer with money activity: Billed, Collected (job-level + ledger payments), Discount, Outstanding. */
+    private static function feesByCustomer(): array
+    {
+        $rows = Model::query(
+            "SELECT COALESCE(NULLIF(c.firm_name,''), c.name) AS customer,
+                COALESCE((SELECT SUM(j.fees_amount) FROM service_jobs j WHERE j.customer_id = c.id),0) AS billed,
+                COALESCE((SELECT SUM(p.amount) FROM service_payments p JOIN service_jobs j ON j.id = p.job_id WHERE j.customer_id = c.id),0)
+                + COALESCE((SELECT SUM(l.amount) FROM customer_ledger l WHERE l.customer_id = c.id AND l.entry_type = 'payment'),0) AS collected,
+                COALESCE((SELECT SUM(l.amount) FROM customer_ledger l WHERE l.customer_id = c.id AND l.entry_type = 'discount'),0) AS discount
+             FROM customers c
+             HAVING billed > 0 OR collected > 0 OR discount > 0
+             ORDER BY (billed - collected - discount) DESC, customer");
+        foreach ($rows as &$r) { $r['outstanding'] = (float)$r['billed'] - (float)$r['collected'] - (float)$r['discount']; }
+        return $rows;
     }
 
     public function export(string $type): void
@@ -83,22 +88,8 @@ class ReportController extends Controller
 
         if ($type === 'fees') {
             $title = 'Fees_Collection';
-            $cols = ['Service','Billed','Collected','Outstanding'];
-            $where = ''; $p = [];
-            if (!empty($f['financial_year'])) { $where .= " AND j.financial_year = ?"; $p[] = $f['financial_year']; }
-            if (!empty($f['service']))        { $where .= " AND j.service_code = ?"; $p[] = $f['service']; }
-            if (!empty($f['date_from']))      { $where .= " AND j.created_at >= ?"; $p[] = $f['date_from']; }
-            if (!empty($f['date_to']))        { $where .= " AND j.created_at <= ?"; $p[] = $f['date_to'].' 23:59:59'; }
-            $rows = Model::query(
-                "SELECT s.name AS service,
-                    COALESCE(SUM(j.fees_amount),0) AS billed,
-                    COALESCE(SUM(ps.total),0) AS collected
-                 FROM service_jobs j
-                 JOIN services s ON s.code=j.service_code
-                 LEFT JOIN (SELECT job_id, SUM(amount) AS total FROM service_payments GROUP BY job_id) ps ON ps.job_id=j.id
-                 WHERE 1=1 $where
-                 GROUP BY j.service_code, s.name ORDER BY billed DESC", $p);
-            foreach ($rows as &$r) { $r['outstanding'] = (float)$r['billed'] - (float)$r['collected']; }
+            $cols = ['Customer','Billed','Collected','Discount','Outstanding'];
+            $rows = self::feesByCustomer();
         } elseif ($type === 'leads') {
             $title = 'Leads_Report'; $cols = ['Status','Count'];
             $rows = Model::query("SELECT status, COUNT(*) c FROM leads GROUP BY status");
@@ -109,7 +100,7 @@ class ReportController extends Controller
         } elseif ($type === 'employees') {
             $title = 'Employee_Performance'; $cols = ['Employee','Jobs','Fees Collected'];
             $rows = Model::query("SELECT u.name AS employee, COUNT(DISTINCT j.id) jobs,
-                COALESCE((SELECT SUM(p.amount) FROM service_payments p WHERE p.recorded_by=u.id),0) collected
+                COALESCE((SELECT SUM(p.amount) FROM service_payments p WHERE p.recorded_by=u.id),0) + COALESCE((SELECT SUM(l.amount) FROM customer_ledger l WHERE l.recorded_by=u.id AND l.entry_type='payment'),0) collected
                 FROM users u LEFT JOIN service_jobs j ON j.assigned_to=u.id GROUP BY u.id ORDER BY collected DESC");
         } else {
             $title = 'Service_Job_Report'; $cols = ['Service','Jobs'];

@@ -42,7 +42,14 @@
           <td class="cell-sub"><?= e(trim(($l['district']??'').' '.($l['state']??'')) ?: '—') ?></td>
           <td><?= $l['follow_up_date'] ? due_pill($l['follow_up_date']) : '—' ?></td>
           <td><?= status_pill($l['status']) ?></td>
-          <td class="text-right"><a href="<?= url('/leads/'.$l['id']) ?>" class="btn btn--light btn--sm">Open</a></td>
+          <td class="text-right" style="white-space:nowrap">
+            <a href="<?= url('/leads/'.$l['id']) ?>" class="btn btn--light btn--sm">Open</a>
+            <?php if (\App\Core\Auth::isAdmin()): ?>
+              <form method="post" action="<?= url('/leads/'.$l['id'].'/delete') ?>" style="display:inline"
+                    onsubmit="return confirm('<?= $l['status']==='won' ? 'Delete this lead? Its customer record will be kept.' : 'Delete this lead and its activity history? This cannot be undone.' ?>')"><?= csrf_field() ?>
+                <button class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5">Delete</button></form>
+            <?php endif; ?>
+          </td>
         </tr>
       <?php endforeach; endif; ?>
       </tbody>
