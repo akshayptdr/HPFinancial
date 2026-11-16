@@ -80,6 +80,7 @@ CREATE TABLE leads (
   address TEXT NULL,
   referred_by VARCHAR(120) NULL,
   contact_person VARCHAR(120) NULL,
+  contact_person_mobile VARCHAR(20) NULL,
   follow_up_date DATE NULL,
   status ENUM('new','contacted','qualified','won','lost') NOT NULL DEFAULT 'new',
   assigned_to BIGINT UNSIGNED NULL,
