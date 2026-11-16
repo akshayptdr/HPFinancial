@@ -1,3 +1,13 @@
+<style>
+  /* service card headers: tinted band, icon badge and title aligned on one line */
+  .card__head.svc-head{background:#eff6ff;border-bottom:1px solid #dbeafe;border-radius:14px 14px 0 0;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .svc-head h3{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0;font-size:18px;font-weight:700;line-height:1.2;color:#14306b}
+  .svc-head .svc-ico{width:38px;height:38px;border-radius:10px;background:#2563eb;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+  .svc-head .svc-ico svg{width:21px;height:21px;display:block}
+  .svc-head.is-stopped{background:#f1f5f9;border-bottom-color:#e2e8f0}
+  .svc-head.is-stopped h3{color:#475569}
+  .svc-head.is-stopped .svc-ico{background:#94a3b8;box-shadow:none}
+</style>
 <div class="page-head">
   <div><div class="crumb"><a href="<?= url('/customers') ?>">Customers</a> · <?= e($c['firm_name'] ?: $c['name']) ?></div>
     <h1 class="flex items-center gap-12"><?= e($c['firm_name'] ?: $c['name']) ?> <?= status_pill($c['status']) ?></h1>
@@ -51,11 +61,25 @@
     </div></div>
   <?php endif; ?>
 
+  <?php
+    $svcIcons = [   // one simple line icon per service (24x24, drawn with currentColor)
+      'income_tax'         => '<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 13h6M10 17h4"/>',
+      'gst'                => '<path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 16 2 2 3-4"/>',
+      'accounting'         => '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M8 15h2M12 15h2"/>',
+      'loan_subsidy'       => '<path d="M3 20h18"/><path d="M5 20V10l7-5 7 5v10"/><path d="M9 20v-6h6v6"/>',
+      'mutual_fund'        => '<path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 3 5-6"/>',
+      'insurance'          => '<path d="M12 3l8 3v6c0 4.5-3.300 7.500-8 9-4.700-1.500-8-4.500-8-9V6z"/><path d="M12 8v5M9.500 10.500h5"/>',
+      'certificate'        => '<circle cx="12" cy="9" r="5"/><path d="m9 13-1.500 8L12 18.500 16.500 21 15 13"/>',
+      'llp_compliance'     => '<circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.500"/><path d="M3 20c0-3 2.200-5 5-5s5 2 5 5"/><path d="M15 15c2.500-.5 5 1 5 4"/>',
+      'company_compliance' => '<rect x="4" y="9" width="16" height="11" rx="1.500"/><path d="M9 9V5h6v4M4 14h16"/>',
+    ];
+    $svcIconDefault = '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12h8"/>';
+  ?>
   <?php foreach ($services as $s): if (!in_array((int)$s['id'], $assigned, true)) continue; $code = $s['code']; $jobs = $grouped[$code] ?? []; ?>
     <div class="card" style="margin-bottom:18px">
       <?php $stp = $stopped[(int)$s['id']] ?? null; ?>
-      <div class="card__head">
-        <h3><?= e($s['name']) ?> <?php if ($stp): ?><span class="pill pill--gray" style="margin-left:6px">Stopped · <?= date_h($stp['stopped_on']) ?></span><?php endif; ?></h3>
+      <div class="card__head svc-head<?= $stp ? ' is-stopped' : '' ?>">
+        <h3><span class="svc-ico"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?= $svcIcons[$code] ?? $svcIconDefault ?></svg></span><?= e($s['name']) ?> <?php if ($stp): ?><span class="pill pill--gray">Stopped · <?= date_h($stp['stopped_on']) ?></span><?php endif; ?></h3>
         <div class="flex gap-8 items-center">
           <?php if ($stp): ?>
             <?php if (can('customers.edit')): ?>

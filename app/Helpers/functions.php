@@ -17,7 +17,17 @@ function url(string $path = '/'): string
     return base_url() . '/' . ltrim($path, '/');
 }
 
-function asset(string $path): string { return url('assets/' . ltrim($path, '/')); }
+/** Public URL of a file under assets/. CSS and JS get ?v=<file time> so browsers fetch the new copy after an update. */
+function asset(string $path): string
+{
+    $rel = 'assets/' . ltrim($path, '/');
+    $url = url($rel);
+    if (preg_match('/\.(css|js)$/', $rel)) {
+        $file = rtrim((string)($_SERVER['DOCUMENT_ROOT'] ?? ''), '/\\') . '/' . $rel;
+        if (is_file($file)) $url .= '?v=' . filemtime($file);
+    }
+    return $url;
+}
 
 function csrf_field(): string { return Csrf::field(); }
 
