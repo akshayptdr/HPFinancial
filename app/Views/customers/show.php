@@ -82,12 +82,12 @@
         <h3><span class="svc-ico"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?= $svcIcons[$code] ?? $svcIconDefault ?></svg></span><?= e($s['name']) ?> <?php if ($stp): ?><span class="pill pill--gray">Stopped · <?= date_h($stp['stopped_on']) ?></span><?php endif; ?></h3>
         <div class="flex gap-8 items-center">
           <?php if ($stp): ?>
-            <?php if (can('customers.edit')): ?>
+            <?php if (\App\Core\Auth::isAdmin()): ?>
               <form method="post" action="<?= url('/customers/'.$c['id'].'/services/'.$s['id'].'/resume') ?>" style="display:inline" onsubmit="return confirm('Resume <?= e($s['name']) ?>? Automatic jobs will start again from the next period.')">
                 <?= csrf_field() ?><button class="btn btn--outline btn--sm">Resume service</button></form>
             <?php endif; ?>
           <?php else: ?>
-            <?php if (can('customers.edit')): ?><button type="button" class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" onclick="openStop(<?= (int)$s['id'] ?>, '<?= e(addslashes($s['name'])) ?>')">Stop service</button><?php endif; ?>
+            <?php if (\App\Core\Auth::isAdmin()): ?><button type="button" class="btn btn--sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" onclick="openStop(<?= (int)$s['id'] ?>, '<?= e(addslashes($s['name'])) ?>')">Stop service</button><?php endif; ?>
             <?php if (can('services.edit')): ?><a href="<?= url('/customers/'.$c['id'].'/jobs/'.str_replace('_','-',$code).'/create') ?>" class="btn btn--primary btn--sm">+ New Job</a><?php endif; ?>
           <?php endif; ?>
         </div>
@@ -352,8 +352,8 @@
 </div>
 <?php endif; ?>
 
-<?php if (can('customers.edit')): ?>
-<!-- Stop service modal -->
+<?php if (\App\Core\Auth::isAdmin()): ?>
+<!-- Stop service modal (admin only) -->
 <div class="modal-backdrop" id="stopModal" style="display:none">
   <form method="post" id="stopForm" action="" class="modal">
     <?= csrf_field() ?>

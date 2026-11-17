@@ -114,6 +114,7 @@ class CustomerController extends Controller
      */
     public function stopService(string $id, string $sid): void
     {
+        if (!Auth::isAdmin()) { Session::flash('error', 'Only an admin can stop a service.'); $this->redirect('/customers/' . $id); }
         $c = Customer::find($id);
         $svc = Service::find($sid);
         if (!$c || !$svc) $this->redirect('/customers');
@@ -160,6 +161,7 @@ class CustomerController extends Controller
     /** Resume a stopped service. Jobs already discontinued stay as they are; automatic jobs start again from the next period. */
     public function resumeService(string $id, string $sid): void
     {
+        if (!Auth::isAdmin()) { Session::flash('error', 'Only an admin can resume a service.'); $this->redirect('/customers/' . $id); }
         $c = Customer::find($id);
         $svc = Service::find($sid);
         if (!$c || !$svc) $this->redirect('/customers');
