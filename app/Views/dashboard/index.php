@@ -5,15 +5,40 @@
   </div>
 </div>
 
+<?php
+  // Summary cards: each opens the page behind its number (only when the user may open that page).
+  $cards = [
+    ['href' => '/leads',        'perm' => 'leads.view',     'tone' => 'bg-blue',   'val' => (int)$stats['leads'],
+     'label' => $isAdmin ? 'Open Leads' : 'My Open Leads',
+     'svg' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><path d="M19 7.500v6M16 10.500h6"/>'],
+    ['href' => '/customers',    'perm' => 'customers.view', 'tone' => 'bg-violet', 'val' => (int)$stats['customers'],
+     'label' => $isAdmin ? 'Active Customers' : 'My Customers',
+     'svg' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><circle cx="17.500" cy="9" r="2.500"/><path d="M17 14.200c2.600.3 4.500 2.200 4.500 5.300"/>'],
+    ['href' => '/reports/fees', 'perm' => 'reports.view',   'tone' => 'bg-green',  'val' => inr_short($stats['collected']), 'mono' => true,
+     'label' => 'Fees Collected (' . date('M') . ')',
+     'svg' => '<circle cx="12" cy="12" r="9"/><path d="M8.500 8h7M8.500 11.500h7M10 8c3 0 4.500 1 4.500 3.200S13 14.500 10 14.500H9l5.500 4"/>'],
+    ['href' => '/reports/fees', 'perm' => 'reports.view',   'tone' => 'bg-amber',  'val' => inr_short(max(0, $stats['pending'])), 'mono' => true,
+     'label' => 'Pending Fees',
+     'svg' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.500 2"/>'],
+  ];
+?>
+<style>
+  .stat--link{display:block;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+  .stat--link:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,48,107,.12);border-color:#bfdbfe}
+  .stat--link:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+  .stat--link::after{content:"";position:absolute;top:18px;right:16px;width:18px;height:18px;opacity:.35;transition:opacity .15s,transform .15s;
+    background:no-repeat center/18px url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314306b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7M8 7h9v9'/></svg>")}
+  .stat--link:hover::after{opacity:.8;transform:translate(2px,-2px)}
+  .stat__icon svg{width:22px;height:22px}
+</style>
 <div class="grid grid--4" style="margin-bottom:18px">
-  <div class="stat"><div class="stat__icon bg-blue"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></div>
-    <div class="stat__val"><?= (int)$stats['leads'] ?></div><div class="stat__label"><?= $isAdmin?'Open Leads':'My Open Leads' ?></div></div>
-  <div class="stat"><div class="stat__icon bg-violet"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></div>
-    <div class="stat__val"><?= (int)$stats['customers'] ?></div><div class="stat__label"><?= $isAdmin?'Active Customers':'My Customers' ?></div></div>
-  <div class="stat"><div class="stat__icon bg-green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13z"/></svg></div>
-    <div class="stat__val mono"><?= inr_short($stats['collected']) ?></div><div class="stat__label">Fees Collected (<?= date('M') ?>)</div></div>
-  <div class="stat"><div class="stat__icon bg-amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21z"/></svg></div>
-    <div class="stat__val mono"><?= inr_short(max(0,$stats['pending'])) ?></div><div class="stat__label">Pending Fees</div></div>
+  <?php foreach ($cards as $c): $link = can($c['perm']); ?>
+    <<?= $link ? 'a href="' . e(url($c['href'])) . '"' : 'div' ?> class="stat<?= $link ? ' stat--link' : '' ?>">
+      <div class="stat__icon <?= $c['tone'] ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?= $c['svg'] ?></svg></div>
+      <div class="stat__val<?= !empty($c['mono']) ? ' mono' : '' ?>"><?= e((string)$c['val']) ?></div>
+      <div class="stat__label"><?= e($c['label']) ?></div>
+    </<?= $link ? 'a' : 'div' ?>>
+  <?php endforeach; ?>
 </div>
 
 <div class="grid" style="grid-template-columns:1.7fr 1fr">
