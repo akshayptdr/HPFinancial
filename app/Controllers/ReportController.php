@@ -27,6 +27,7 @@ class ReportController extends Controller
             $title = 'Fees / Collection';
             $cols = ['Customer','Billed','Collected','Discount','Outstanding'];
             $rows = self::feesByCustomer();
+            $show = self::feesShow();
         } elseif ($type === 'leads') {
             $title = 'Leads Report'; $cols = ['Status','Count'];
             $rows = Model::query("SELECT status, COUNT(*) c FROM leads GROUP BY status");
@@ -46,7 +47,7 @@ class ReportController extends Controller
         }
 
         // totals for fees
-        $totals = null;
+        $totals = null; $show = $show ?? '';
         if ($type === 'fees') {
             $totals = [
                 'billed'      => array_sum(array_column($rows, 'billed')),
@@ -54,13 +55,30 @@ class ReportController extends Controller
                 'discount'    => array_sum(array_column($rows, 'discount')),
                 'outstanding' => array_sum(array_map(fn($r) => max(0, (float)$r['outstanding']), $rows)),
             ];
+            $rows = self::filterFees($rows, $show);      // the cards above always show firm totals; the list follows the chosen card
         }
 
         $this->view('reports/show', array_merge($this->nav(), [
             'pageTitle' => $title, 'activeNav' => 'reports',
-            'type' => $type, 'title' => $title, 'cols' => $cols, 'rows' => $rows, 'totals' => $totals,
+            'type' => $type, 'title' => $title, 'cols' => $cols, 'rows' => $rows, 'totals' => $totals, 'show' => $show,
             'f' => $f, 'services' => Service::activeList(),
         ]));
+    }
+
+    /** Which summary card was clicked on the Fees report: billed | collected | discount | outstanding | '' (all). */
+    private static function feesShow(): string
+    {
+        $s = (string) Request::input('show', '');
+        return in_array($s, ['billed', 'collected', 'discount', 'outstanding'], true) ? $s : '';
+    }
+
+    /** Keep the customers behind one card, biggest amount first. */
+    private static function filterFees(array $rows, string $show): array
+    {
+        if ($show === '') return $rows;
+        $rows = array_values(array_filter($rows, fn($r) => (float)$r[$show] > 0.004));
+        usort($rows, fn($a, $b) => (float)$b[$show] <=> (float)$a[$show]);
+        return $rows;
     }
 
     /** One row per customer with money activity: Billed, Collected (job-level + ledger payments), Discount, Outstanding. */
@@ -89,7 +107,7 @@ class ReportController extends Controller
         if ($type === 'fees') {
             $title = 'Fees_Collection';
             $cols = ['Customer','Billed','Collected','Discount','Outstanding'];
-            $rows = self::feesByCustomer();
+            $rows = self::filterFees(self::feesByCustomer(), self::feesShow());
         } elseif ($type === 'leads') {
             $title = 'Leads_Report'; $cols = ['Status','Count'];
             $rows = Model::query("SELECT status, COUNT(*) c FROM leads GROUP BY status");
