@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $scope = $isAdmin ? '' : " AND assigned_to = " . (int)$uid;
 
         $stats = [
-            'leads'     => (int) Model::scalar("SELECT COUNT(*) FROM leads WHERE 1=1" . ($isAdmin ? '' : " AND assigned_to=$uid")),
+            'leads'     => (int) Model::scalar("SELECT COUNT(*) FROM leads WHERE status IN ('new','contacted','qualified')" . ($isAdmin ? '' : " AND assigned_to=$uid")),   // open leads: not yet won or lost
             'customers' => (int) Model::scalar("SELECT COUNT(*) FROM customers WHERE status='active'" . ($isAdmin ? '' : " AND assigned_to=$uid")),
         ];
         $monthWhere = "MONTH(%s)=MONTH(CURDATE()) AND YEAR(%s)=YEAR(CURDATE())";

@@ -21,7 +21,10 @@ class Lead extends Model
         if (!empty($f['q']))        { $sql .= " AND (l.name LIKE ? OR l.mobile LIKE ?)"; $p[] = "%{$f['q']}%"; $p[] = "%{$f['q']}%"; }
         if (!empty($f['type']))     { $sql .= " AND l.lead_type_id = ?"; $p[] = $f['type']; }
         if (!empty($f['category'])) { $sql .= " AND l.id IN (SELECT lead_id FROM lead_category_map WHERE category_id = ?)"; $p[] = $f['category']; }
-        if (!empty($f['status']))   { $sql .= " AND l.status = ?"; $p[] = $f['status']; }
+        // Converted (Won) leads are hidden unless asked for: pick "Won" or "All incl. Won", or search by name / mobile.
+        if (($f['status'] ?? '') === 'all') { /* everything */ }
+        elseif (!empty($f['status']))        { $sql .= " AND l.status = ?"; $p[] = $f['status']; }
+        elseif (empty($f['q']))              { $sql .= " AND l.status <> 'won'"; }
         if (!empty($f['assignee'])) { $sql .= " AND l.assigned_to = ?"; $p[] = $f['assignee']; }
         if (!empty($f['mine']))     { $sql .= " AND l.assigned_to = ?"; $p[] = $f['mine']; }
         $sql .= " GROUP BY l.id ORDER BY l.id DESC LIMIT 200";

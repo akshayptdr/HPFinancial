@@ -7,7 +7,7 @@
 
 <div class="grid grid--4" style="margin-bottom:18px">
   <div class="stat"><div class="stat__icon bg-blue"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></div>
-    <div class="stat__val"><?= (int)$stats['leads'] ?></div><div class="stat__label"><?= $isAdmin?'Total Leads':'My Leads' ?></div></div>
+    <div class="stat__val"><?= (int)$stats['leads'] ?></div><div class="stat__label"><?= $isAdmin?'Open Leads':'My Open Leads' ?></div></div>
   <div class="stat"><div class="stat__icon bg-violet"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></div>
     <div class="stat__val"><?= (int)$stats['customers'] ?></div><div class="stat__label"><?= $isAdmin?'Active Customers':'My Customers' ?></div></div>
   <div class="stat"><div class="stat__icon bg-green"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13z"/></svg></div>

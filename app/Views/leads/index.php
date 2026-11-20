@@ -20,7 +20,7 @@
         <?php foreach ($types as $t): ?><option value="<?= $t['id'] ?>" <?= ($f['type']??'')==$t['id']?'selected':'' ?>><?= e($t['name']) ?></option><?php endforeach; ?></select></div>
       <div class="select-wrap"><select class="select" name="category"><option value="">All Categories</option>
         <?php foreach ($categories as $c): ?><option value="<?= $c['id'] ?>" <?= ($f['category']??'')==$c['id']?'selected':'' ?>><?= e($c['name']) ?></option><?php endforeach; ?></select></div>
-      <div class="select-wrap"><select class="select" name="status"><option value="">All Status</option>
+      <div class="select-wrap"><select class="select" name="status"><option value="">Open leads (hide Won)</option><option value="all" <?= ($f['status']??'')==='all'?'selected':'' ?>>All, including Won</option>
         <?php foreach (['new','contacted','qualified','won','lost'] as $s): ?><option value="<?= $s ?>" <?= ($f['status']??'')==$s?'selected':'' ?>><?= ucfirst($s) ?></option><?php endforeach; ?></select></div>
       <button class="btn btn--primary btn--sm">Filter</button>
       <a href="<?= url('/leads') ?>" class="btn btn--ghost btn--sm">Reset</a>
