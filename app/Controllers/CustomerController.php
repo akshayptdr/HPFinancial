@@ -28,8 +28,7 @@ class CustomerController extends Controller
 
     public function index(): void
     {
-        $f = Request::only(['q','service','assignee']);
-        if (!Auth::isAdmin()) $f['mine'] = Auth::id();
+        $f = Request::only(['q','service','assignee']);   // every signed-in user sees the full customer list
         $customers = Customer::filtered($f);
         foreach ($customers as &$c) { $c['pending'] = Customer::pendingFees((int)$c['id']); }
         $this->view('customers/index', array_merge($this->nav(), [

@@ -59,6 +59,18 @@ class Auth
         return $u && $u['role_slug'] === 'admin';
     }
 
+    public static function isManager(): bool
+    {
+        $u = self::user();
+        return $u && $u['role_slug'] === 'manager';
+    }
+
+    /** Admins and Managers see every lead, job and group; other roles see only what is assigned to them. */
+    public static function seesAll(): bool
+    {
+        return self::isAdmin() || self::isManager();
+    }
+
     public static function permissions(): array
     {
         if (self::$permissions !== null) return self::$permissions;

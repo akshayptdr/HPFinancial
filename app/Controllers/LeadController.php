@@ -26,7 +26,7 @@ class LeadController extends Controller
     public function index(): void
     {
         $f = Request::only(['q','type','category','status','assignee']);
-        if (!Auth::isAdmin()) $f['mine'] = Auth::id();
+        if (!Auth::seesAll()) $f['mine'] = Auth::id();
         $this->view('leads/index', array_merge($this->nav(), [
             'pageTitle' => 'Leads', 'activeNav' => 'leads',
             'leads' => Lead::filtered($f),

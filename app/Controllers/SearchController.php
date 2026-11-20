@@ -22,7 +22,7 @@ class SearchController extends Controller
                         FROM leads
                         WHERE (name LIKE ? OR mobile LIKE ?)";
             $params = [$like, $like];
-            if (!Auth::isAdmin()) {
+            if (!Auth::seesAll()) {
                 $leadSql .= " AND assigned_to = ?";
                 $params[] = Auth::id();
             }
@@ -45,10 +45,6 @@ class SearchController extends Controller
                         FROM customers
                         WHERE (name LIKE ? OR firm_name LIKE ? OR mobile LIKE ? OR gst_number LIKE ?)";
             $cParams = [$like, $like, $like, $like];
-            if (!Auth::isAdmin()) {
-                $custSql .= " AND assigned_to = ?";
-                $cParams[] = Auth::id();
-            }
             $custSql .= " ORDER BY id DESC LIMIT 6";
             $custs = $pdo->prepare($custSql);
             $custs->execute($cParams);

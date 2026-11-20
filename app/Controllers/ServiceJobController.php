@@ -186,7 +186,7 @@ class ServiceJobController extends Controller
     {
         ServiceJob::generateRecurring(); // auto-create next-year ITR / TDS jobs that have come due for creation
         $f = Request::only(['service','status','assignee','overdue','financial_year','q']);
-        if (!Auth::isAdmin()) $f['mine'] = Auth::id();
+        if (!Auth::seesAll()) $f['mine'] = Auth::id();
         $this->view('services/board', array_merge($this->nav(), [
             'pageTitle' => 'Work Board', 'activeNav' => 'board',
             'jobs' => ServiceJob::board($f),

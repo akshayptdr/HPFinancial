@@ -23,7 +23,7 @@ class FamilyController extends Controller
     {
         $this->view('families/index', array_merge($this->nav(), [
             'pageTitle' => 'Groups', 'activeNav' => 'families',
-            'families' => Family::listing(Auth::isAdmin() ? null : Auth::id()),
+            'families' => Family::listing(Auth::seesAll() ? null : Auth::id()),
         ]));
     }
 

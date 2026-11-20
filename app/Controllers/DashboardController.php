@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index(): void
     {
-        $isAdmin = Auth::isAdmin();
+        $isAdmin = Auth::seesAll();   // Admin and Manager see the whole firm; others see their own work
         $uid = Auth::id();
         $scope = $isAdmin ? '' : " AND assigned_to = " . (int)$uid;
 
