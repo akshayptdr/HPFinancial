@@ -1,10 +1,10 @@
 <style>
   /* service card headers: tinted band, icon badge and title aligned on one line */
-  .card__head.svc-head{background:#eff6ff;border-bottom:1px solid #dbeafe;border-radius:14px 14px 0 0;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card__head.svc-head{background:#cfe0fb;border-bottom:1px solid #a9c4f2;border-radius:14px 14px 0 0;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
   .svc-head h3{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0;font-size:18px;font-weight:700;line-height:1.2;color:#14306b}
   .svc-head .svc-ico{width:38px;height:38px;border-radius:10px;background:#2563eb;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:0 2px 6px rgba(37,99,235,.25)}
   .svc-head .svc-ico svg{width:21px;height:21px;display:block}
-  .svc-head.is-stopped{background:#f1f5f9;border-bottom-color:#e2e8f0}
+  .svc-head.is-stopped{background:#e2e8f0;border-bottom-color:#cbd5e1}
   .svc-head.is-stopped h3{color:#475569}
   .svc-head.is-stopped .svc-ico{background:#94a3b8;box-shadow:none}
 </style>
