@@ -20,7 +20,9 @@ class SearchController extends Controller
             // Leads (scoped for employees)
             $leadSql = "SELECT id, name, mobile, status, district
                         FROM leads
-                        WHERE (name LIKE ? OR mobile LIKE ?)";
+                        WHERE (name LIKE ? OR mobile LIKE ?)
+                          AND status <> 'won'                                                            -- converted leads show as the customer instead
+                          AND id NOT IN (SELECT lead_id FROM customers WHERE lead_id IS NOT NULL)";
             $params = [$like, $like];
             if (!Auth::seesAll()) {
                 $leadSql .= " AND assigned_to = ?";
