@@ -65,6 +65,12 @@ class Auth
         return $u && $u['role_slug'] === 'manager';
     }
 
+    /** Fees, payments, discounts, invoices and money reports are for Admins and Managers only. */
+    public static function seesMoney(): bool
+    {
+        return self::seesAll();
+    }
+
     /** Admins and Managers see every lead, job and group; other roles see only what is assigned to them. */
     public static function seesAll(): bool
     {

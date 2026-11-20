@@ -13,8 +13,8 @@
     <h1 class="flex items-center gap-12"><?= e($c['firm_name'] ?: $c['name']) ?> <?= status_pill($c['status']) ?></h1>
     <div class="muted" style="margin-top:4px"><?= e($c['name']) ?><?= $c['address']?' · '.e($c['address']):'' ?></div></div>
   <div class="page-head__actions">
-    <?php if (can('invoices.manage')): ?><a class="btn btn--outline" href="<?= url('/customers/'.$c['id'].'/invoices/new') ?>">Create Invoice</a><?php endif; ?>
-    <?php if (can('payments.record')): ?><button class="btn btn--outline" onclick="openPay()">Receive Payment</button><?php endif; ?>
+    <?php if (sees_money() && can('invoices.manage')): ?><a class="btn btn--outline" href="<?= url('/customers/'.$c['id'].'/invoices/new') ?>">Create Invoice</a><?php endif; ?>
+    <?php if (sees_money() && can('payments.record')): ?><button class="btn btn--outline" onclick="openPay()">Receive Payment</button><?php endif; ?>
     <?php if (can('customers.edit')): ?><button class="btn btn--primary" onclick="document.getElementById('svcModal').style.display='grid'">Manage Services</button><?php endif; ?>
   </div>
 </div>
@@ -34,8 +34,8 @@
 
 <div class="tabs" id="activity">
   <div class="tab active" data-tab="services" onclick="tab(this)">Services <span class="tag" style="margin-left:4px"><?= count($assigned) ?></span></div>
-  <div class="tab" data-tab="payments" onclick="tab(this)">Payments <span class="tag" style="margin-left:4px"><?= count($history) ?></span></div>
-  <?php if (can('invoices.manage')): ?><div class="tab" data-tab="invoices" onclick="tab(this)">Invoices <span class="tag" style="margin-left:4px"><?= count($invoices) ?></span></div><?php endif; ?>
+  <?php if (sees_money()): ?><div class="tab" data-tab="payments" onclick="tab(this)">Payments <span class="tag" style="margin-left:4px"><?= count($history) ?></span></div><?php endif; ?>
+  <?php if (sees_money() && can('invoices.manage')): ?><div class="tab" data-tab="invoices" onclick="tab(this)">Invoices <span class="tag" style="margin-left:4px"><?= count($invoices) ?></span></div><?php endif; ?>
   <div class="tab" data-tab="activity" onclick="tab(this)">Activity <span class="tag" style="margin-left:4px"><?= count($activities) ?></span></div>
   <div class="tab" data-tab="profile" onclick="tab(this)">Profile</div>
   <div class="tab" data-tab="documents" onclick="tab(this)">Documents <span class="tag" style="margin-left:4px"><?= count($documents) ?></span></div>
@@ -49,7 +49,7 @@
   <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--warning-fg)"><?= money($discount) ?></div><div class="stat__label">Discount / Written off</div></div>
   <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:<?= $isAdvance ? 'var(--success)' : ($outstanding > 0.004 ? 'var(--danger)' : 'var(--success)') ?>"><?= money(abs($outstanding)) ?></div><div class="stat__label"><?= $isAdvance ? 'Advance (paid ahead)' : 'Outstanding' ?></div></div>
 </div>
-<?php $statsHtml = ob_get_clean(); ?>
+<?php $statsHtml = ob_get_clean(); if (!sees_money()) $statsHtml = ''; ?>
 <!-- ===== Services tab ===== -->
 <div data-pane="services">
   <?php echo $statsHtml; ?>
@@ -97,7 +97,7 @@
       <?php endif; ?>
       <div class="table-wrap">
         <table class="tbl">
-          <thead><tr><th>Sub-type / Detail</th><th>Period / FY</th><th>Due</th><th>Status</th><th>Fee</th><th></th></tr></thead>
+          <thead><tr><th>Sub-type / Detail</th><th>Period / FY</th><th>Due</th><th>Status</th><?php if (sees_money()): ?><th>Fee</th><?php endif; ?><th></th></tr></thead>
           <tbody>
           <?php if (!$jobs): ?><tr><td colspan="6" class="muted" style="padding:18px;text-align:center">No jobs yet.</td></tr>
           <?php else: foreach ($jobs as $j): ?>
@@ -106,7 +106,7 @@
               <td class="mono"><?= e($j['period_label'] ?: $j['financial_year'] ?: '—') ?></td>
               <td><?= $j['due_date']?due_pill($j['due_date']):'—' ?><?= !empty($j['due_date_2']) ? '<div style="margin-top:3px">'.due_pill($j['due_date_2']).'</div>' : '' ?></td>
               <td><?= $j['status_name']?status_pill($j['status_name']):'<span class="pill pill--gray">—</span>' ?></td>
-              <td class="mono"><?= money($j['fees_amount']) ?></td>
+              <?php if (sees_money()): ?><td class="mono"><?= money($j['fees_amount']) ?></td><?php endif; ?>
               <td class="text-right" style="white-space:nowrap">
                 <a href="<?= url('/jobs/'.$j['id'].'/edit') ?>" class="btn btn--light btn--sm">Open</a>
                 <?php if (can('services.edit')): ?>
@@ -125,6 +125,7 @@
   <?php endforeach; ?>
 </div>
 
+<?php if (sees_money()): ?>
 <!-- ===== Payments tab ===== -->
 <div data-pane="payments" style="display:none" id="paymentsPane">
   <?php echo $statsHtml; ?>
@@ -162,7 +163,9 @@
   </div>
 </div>
 
-<?php if (can('invoices.manage')): ?>
+<?php endif; /* payments tab: Admin and Manager only */ ?>
+
+<?php if (sees_money() && can('invoices.manage')): ?>
 <!-- ===== Invoices tab ===== -->
 <div data-pane="invoices" style="display:none">
   <div class="flex gap-8" style="margin-bottom:14px"><a class="btn btn--primary" href="<?= url('/customers/'.$c['id'].'/invoices/new') ?>">+ Create Invoice</a></div>
@@ -305,7 +308,7 @@
   </div>
 </div>
 
-<?php if (can('payments.record')): ?>
+<?php if (sees_money() && can('payments.record')): ?>
 <!-- Receive payment modal -->
 <div class="modal-backdrop" id="payModal" style="display:none">
   <form method="post" action="<?= url('/customers/'.$c['id'].'/payments') ?>" class="modal">
@@ -330,7 +333,7 @@
   </form>
 </div>
 <?php endif; ?>
-<?php if (can('payments.discount')): ?>
+<?php if (sees_money() && can('payments.discount')): ?>
 <!-- Discount / write-off modal -->
 <div class="modal-backdrop" id="discModal" style="display:none">
   <form method="post" action="<?= url('/customers/'.$c['id'].'/discounts') ?>" class="modal">

@@ -31,7 +31,7 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
   </div>
 </div>
 
-<div class="grid" style="grid-template-columns:1.5fr 1fr">
+<div class="grid" style="grid-template-columns:<?= sees_money() ? '1.5fr 1fr' : '1fr' ?>">
   <div class="card">
     <div class="card__head"><h3>Job Details</h3></div>
     <div class="card__body">
@@ -163,7 +163,8 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
           <div class="muted small" style="margin-top:12px">Completed on <b><?= e(date('d M Y', strtotime($job['completed_on']))) ?></b> · the renewal job for the next year is added to the Work Board one month before <b><?= e(date('d M Y', strtotime($job['completed_on'].' +1 year'))) ?></b>.</div>
         <?php endif; ?>
         <div class="field" style="margin-top:14px"><label>Comment</label><textarea class="input" name="comment" rows="2"><?= e($val('comment')) ?></textarea></div>
-        <?php if (!in_array($code, ['mutual_fund', 'insurance'], true)): ?>
+        <?php if (!sees_money()): ?>
+        <?php elseif (!in_array($code, ['mutual_fund', 'insurance'], true)): ?>
         <div class="field"><label>Agreed Fee (₹)</label><input class="input mono" type="number" step="0.01" name="fees_amount" value="<?= e($fees ?: '') ?>"></div>
         <?php elseif ($code === 'insurance'): ?>
         <div class="field" id="insFeeBox" style="display:none"><label>Agreed Fee (₹)</label><input class="input mono" type="number" step="0.01" name="fees_amount" value="<?= e($fees ?: '') ?>"></div>
@@ -176,7 +177,8 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
     </div>
   </div>
 
-  <!-- Fees panel: payments are collected per customer, not per job -->
+  <!-- Fees panel: payments are collected per customer, not per job (Admin and Manager only) -->
+  <?php if (sees_money()): ?>
   <div class="card" style="align-self:start">
     <div class="card__head"><h3>Fee</h3></div>
     <div class="card__body">
@@ -187,6 +189,7 @@ foreach ($items as $it) { $selItems[$it['item_type']] = $it; }
         <a href="<?= url('/customers/'.$c['id'].'#payments') ?>" style="font-weight:600">Open Payments →</a></p>
     </div>
   </div>
+  <?php endif; ?>
 </div>
 
 <script>

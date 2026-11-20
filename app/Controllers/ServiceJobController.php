@@ -174,6 +174,7 @@ class ServiceJobController extends Controller
 
     public function deletePayment(string $id): void
     {
+        if (!Auth::seesMoney()) { Session::flash('error', 'You do not have access to fees and payments.'); $this->redirect('/customers'); }
         $payment = ServicePayment::find($id);
         if (!$payment) $this->redirect('/customers');
         $job = ServiceJob::find($payment['job_id']);
@@ -209,7 +210,7 @@ class ServiceJobController extends Controller
             'due_date' => Request::input('due_date') ?: null,
             'filing_date' => Request::input('filing_date') ?: null,
             'file_status_id' => Request::input('file_status_id') ?: null,
-            'fees_amount' => (float) Request::input('fees_amount', 0),
+            'fees_amount' => Auth::seesMoney() ? (float) Request::input('fees_amount', 0) : (float) ($existing['fees_amount'] ?? 0),   // fees are not shown to employees: keep what is there
             'comment' => Request::input('comment') ?: null,
             'assigned_to' => Request::input('assigned_to') ?: null,
             'financial_year' => Request::input('financial_year') ?: null,

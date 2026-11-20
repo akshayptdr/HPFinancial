@@ -30,7 +30,7 @@ class CustomerController extends Controller
     {
         $f = Request::only(['q','service','assignee']);   // every signed-in user sees the full customer list
         $customers = Customer::filtered($f);
-        foreach ($customers as &$c) { $c['pending'] = Customer::pendingFees((int)$c['id']); }
+        foreach ($customers as &$c) { $c['pending'] = Auth::seesMoney() ? Customer::pendingFees((int)$c['id']) : 0; }
         $this->view('customers/index', array_merge($this->nav(), [
             'pageTitle' => 'Customers', 'activeNav' => 'customers',
             'customers' => $customers, 'services' => Service::activeList(),
@@ -177,6 +177,7 @@ class CustomerController extends Controller
     /** Receive a payment against the customer's total outstanding (no per-job split). */
     public function addPayment(string $id): void
     {
+        $this->requireMoney('/customers/' . $id);
         if (!Customer::find($id)) $this->redirect('/customers');
         $back = '/customers/' . $id . '#payments';
         $amount = round((float) Request::input('amount'), 2);
@@ -197,6 +198,7 @@ class CustomerController extends Controller
     /** Write off part of the amount owed. A remark is mandatory and it cannot exceed what is outstanding. */
     public function addDiscount(string $id): void
     {
+        $this->requireMoney('/customers/' . $id);
         if (!Customer::find($id)) $this->redirect('/customers');
         $back = '/customers/' . $id . '#payments';
         $amount = round((float) Request::input('amount'), 2);
@@ -220,8 +222,15 @@ class CustomerController extends Controller
     }
 
     /** Remove a ledger entry (a mistake). Discounts need the discount permission. */
+    /** Payments, discounts and fee figures are for Admin and Manager only. */
+    private function requireMoney(string $back): void
+    {
+        if (!Auth::seesMoney()) { Session::flash('error', 'You do not have access to fees and payments.'); $this->redirect($back); }
+    }
+
     public function deleteEntry(string $entryId): void
     {
+        $this->requireMoney('/customers');
         $e = CustomerLedger::find($entryId);
         if (!$e) $this->redirect('/customers');
         if ($e['entry_type'] === 'discount' && !can('payments.discount')) {

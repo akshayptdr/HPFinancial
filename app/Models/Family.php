@@ -31,7 +31,7 @@ class Family extends Model
 
     public static function canView(array $family): bool
     {
-        if (Auth::isAdmin()) return true;
+        if (Auth::seesAll()) return true;      // Admin and Manager open every group
         return (int) self::scalar("SELECT COUNT(*) FROM customers WHERE family_id = ? AND assigned_to = ?",
             [$family['id'], Auth::id()]) > 0;
     }

@@ -14,13 +14,14 @@
     ['href' => '/customers',    'perm' => 'customers.view', 'tone' => 'bg-violet', 'val' => (int)$stats['customers'],
      'label' => 'Active Customers',
      'svg' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><circle cx="17.500" cy="9" r="2.500"/><path d="M17 14.200c2.600.3 4.500 2.200 4.500 5.300"/>'],
-    ['href' => '/reports/fees?show=collected', 'perm' => 'reports.view',   'tone' => 'bg-green',  'val' => inr_short($stats['collected']), 'mono' => true,
+    ['href' => '/reports/fees?show=collected', 'perm' => 'reports.view',   'tone' => 'bg-green',  'val' => inr_short($stats['collected']), 'mono' => true, 'money' => true,
      'label' => 'Fees Collected (' . date('M') . ')',
      'svg' => '<circle cx="12" cy="12" r="9"/><path d="M8.500 8h7M8.500 11.500h7M10 8c3 0 4.500 1 4.500 3.200S13 14.500 10 14.500H9l5.500 4"/>'],
-    ['href' => '/reports/fees?show=outstanding', 'perm' => 'reports.view',   'tone' => 'bg-amber',  'val' => inr_short(max(0, $stats['pending'])), 'mono' => true,
+    ['href' => '/reports/fees?show=outstanding', 'perm' => 'reports.view',   'tone' => 'bg-amber',  'val' => inr_short(max(0, $stats['pending'])), 'mono' => true, 'money' => true,
      'label' => 'Pending Fees',
      'svg' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.500 2"/>'],
   ];
+  $cards = array_values(array_filter($cards, fn($c) => empty($c['money']) || sees_money()));   // fee cards: Admin and Manager only
 ?>
 <style>
   .stat--link{display:block;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}

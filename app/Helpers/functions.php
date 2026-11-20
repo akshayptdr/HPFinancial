@@ -41,6 +41,9 @@ function flash(string $type) { return Session::flash($type); }
 
 function can(string $perm): bool { return Auth::can($perm); }
 
+/** True for Admin and Manager: the only roles that may see fees, payments and money totals. */
+function sees_money(): bool { return Auth::seesMoney(); }
+
 function auth_user(): ?array { return Auth::user(); }
 
 function active(string $page, string $current): string { return $page === $current ? 'active' : ''; }

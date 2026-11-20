@@ -6,7 +6,7 @@
 <div class="card">
   <div class="table-wrap">
     <table class="tbl">
-      <thead><tr><th>Group</th><th>Members</th><th>Contact</th><th>Payer</th><th>Billed</th><th>Received</th><th>Discount</th><th>To collect</th><th></th></tr></thead>
+      <thead><tr><th>Group</th><th>Members</th><th>Contact</th><th>Payer</th><?php if (sees_money()): ?><th>Billed</th><th>Received</th><th>Discount</th><th>To collect</th><?php endif; ?><th></th></tr></thead>
       <tbody>
       <?php if (!$families): ?>
         <tr><td colspan="9" class="muted" style="padding:28px;text-align:center">No groups yet. Open a customer or lead and use “Add to group”.</td></tr>
@@ -16,10 +16,12 @@
           <td><?= (int)$f['member_count'] ?></td>
           <td><?= $f['contact'] ? e($f['contact']['name']).'<div class="cell-sub mono">'.e($f['contact']['mobile']).'</div>' : '—' ?></td>
           <td><?= $f['payer'] ? e($f['payer']['name']) : '—' ?></td>
+          <?php if (sees_money()): ?>
           <td class="mono"><?= money($s['billed']) ?></td>
           <td class="mono" style="color:var(--success)"><?= money($s['received']) ?></td>
           <td class="mono"><?= $s['discount']>0 ? money($s['discount']) : '—' ?></td>
           <td class="mono" style="color:<?= $s['outstanding']>0?'var(--danger)':'var(--success)' ?>"><?= money($s['outstanding']) ?></td>
+          <?php endif; ?>
           <td class="text-right"><a class="btn btn--light btn--sm" href="<?= url('/families/'.$f['id']) ?>">Open</a></td>
         </tr>
       <?php endforeach; endif; ?>

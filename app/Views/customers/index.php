@@ -14,7 +14,7 @@
   </div>
   <div class="table-wrap">
     <table class="tbl">
-      <thead><tr><th>Customer / Firm</th><th>Mobile</th><th>GST No.</th><th>Pending Fees</th><th></th></tr></thead>
+      <thead><tr><th>Customer / Firm</th><th>Mobile</th><th>GST No.</th><?php if (sees_money()): ?><th>Pending Fees</th><?php endif; ?><th></th></tr></thead>
       <tbody>
       <?php if (!$customers): ?>
         <tr><td colspan="5" class="empty" style="padding:36px">No customers found.</td></tr>
@@ -24,7 +24,7 @@
             <div class="cell-sub"><?= e($c['name']) ?><?= $c['district']?' · '.e($c['district']):'' ?></div></td>
           <td class="mono"><?= e($c['mobile']) ?></td>
           <td class="mono"><?= e($c['gst_number'] ?: '—') ?></td>
-          <td class="mono" style="font-weight:600;color:<?= $c['pending']>0?'var(--danger)':'var(--success)' ?>"><?= money(max(0,$c['pending'])) ?></td>
+          <?php if (sees_money()): ?><td class="mono" style="font-weight:600;color:<?= $c['pending']>0?'var(--danger)':'var(--success)' ?>"><?= money(max(0,$c['pending'])) ?></td><?php endif; ?>
           <td class="text-right"><a href="<?= url('/customers/'.$c['id']) ?>" class="btn btn--light btn--sm">Open</a></td>
         </tr>
       <?php endforeach; endif; ?>

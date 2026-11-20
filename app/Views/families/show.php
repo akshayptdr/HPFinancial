@@ -1,5 +1,5 @@
 <?php
-$canPay = can('payments.record');
+$canPay = sees_money() && can('payments.record');
 $canEdit = can('customers.edit');
 $payerId = (int)($f['payer_customer_id'] ?? 0);
 $contactKey = ($f['contact_type'] && $f['contact_id']) ? $f['contact_type'].':'.$f['contact_id'] : '';
@@ -17,6 +17,7 @@ $contactKey = ($f['contact_type'] && $f['contact_id']) ? $f['contact_type'].':'.
   </div>
 </div>
 
+<?php if (sees_money()): ?>
 <div class="grid grid--4" style="margin-bottom:12px">
   <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px"><?= money($summary['billed']) ?></div><div class="stat__label">Total Billed</div></div>
   <div class="stat" style="padding:14px 16px"><div class="stat__val mono" style="font-size:20px;color:var(--success)"><?= money($summary['received']) ?></div><div class="stat__label">Received</div></div>
@@ -25,13 +26,14 @@ $contactKey = ($f['contact_type'] && $f['contact_id']) ? $f['contact_type'].':'.
 </div>
 <p class="muted small" style="margin:0 0 18px">Payments and discounts are recorded on <b>each member's own page</b>. This page only adds them up.
   <?php if ($summary['advance'] > 0.004): ?> Members who paid ahead hold <b class="mono"><?= money($summary['advance']) ?></b> in advance (not netted against others).<?php endif; ?></p>
+<?php endif; ?>
 
 <!-- Members -->
 <div class="card">
   <div class="card__head"><h3>Members</h3></div>
   <div class="table-wrap">
     <table class="tbl">
-      <thead><tr><th>Name</th><th>Type</th><th>Mobile</th><th>Roles</th><th>Billed</th><th>Received</th><th>Discount</th><th>Outstanding</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>Type</th><th>Mobile</th><th>Roles</th><?php if (sees_money()): ?><th>Billed</th><th>Received</th><th>Discount</th><th>Outstanding</th><?php endif; ?><th></th></tr></thead>
       <tbody>
       <?php foreach ($customers as $c): $out = (float)$c['outstanding']; ?>
         <tr>
@@ -42,10 +44,12 @@ $contactKey = ($f['contact_type'] && $f['contact_id']) ? $f['contact_type'].':'.
             <?php if ($contactKey === 'customer:'.$c['id']): ?><span class="pill pill--sky">Contact</span> <?php endif; ?>
             <?php if ($payerId === (int)$c['id']): ?><span class="pill pill--green">Payer</span><?php endif; ?>
           </td>
+          <?php if (sees_money()): ?>
           <td class="mono"><?= money($c['billed']) ?></td>
           <td class="mono"><?= money($c['received']) ?></td>
           <td class="mono"><?= $c['discount'] > 0 ? money($c['discount']) : '—' ?></td>
           <td class="mono" style="color:<?= $out>0.004?'var(--danger)':'var(--success)' ?>"><?= $out < -0.004 ? money(abs($out)).' <span class="muted small">advance</span>' : money($out) ?></td>
+          <?php endif; ?>
           <td class="text-right" style="white-space:nowrap">
             <?php if ($canPay): ?><a class="btn btn--primary btn--sm" href="<?= url('/customers/'.$c['id'].'?pay=1#payments') ?>">Receive Payment</a><?php endif; ?>
             <?php if ($canEdit): ?>
@@ -62,7 +66,7 @@ $contactKey = ($f['contact_type'] && $f['contact_id']) ? $f['contact_type'].':'.
           <td><span class="pill pill--amber">Lead</span></td>
           <td class="mono"><?= e($l['mobile']) ?></td>
           <td><?php if ($contactKey === 'lead:'.$l['id']): ?><span class="pill pill--sky">Contact</span><?php endif; ?></td>
-          <td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td>
+          <?php if (sees_money()): ?><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><?php endif; ?>
           <td class="text-right"><?php if ($canEdit): ?>
             <form method="post" action="<?= url('/families/'.$f['id'].'/remove-member') ?>" style="display:inline" onsubmit="return confirm('Remove from this group?')">
               <?= csrf_field() ?><input type="hidden" name="member_type" value="lead"><input type="hidden" name="member_id" value="<?= (int)$l['id'] ?>">
@@ -72,7 +76,7 @@ $contactKey = ($f['contact_type'] && $f['contact_id']) ? $f['contact_type'].':'.
       <?php endforeach; ?>
       <?php if (!$customers && !$leads): ?><tr><td colspan="9" class="muted" style="padding:18px;text-align:center">No members. Add people from their Customer or Lead page.</td></tr><?php endif; ?>
       </tbody>
-      <?php if ($customers): ?>
+      <?php if ($customers && sees_money()): ?>
       <tfoot><tr style="font-weight:700;background:var(--n-50)">
         <td colspan="4">Group total</td>
         <td class="mono"><?= money($summary['billed']) ?></td>

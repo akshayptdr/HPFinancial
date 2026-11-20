@@ -8,6 +8,7 @@
     ['services','Service / Job Report','bg-amber','Job volume per service.'],
     ['employees','Employee Performance','bg-sky','Jobs handled & fees collected.'],
   ];
+  if (!sees_money()) $cards = array_values(array_filter($cards, fn($c) => !in_array($c[0], ['fees', 'employees'], true)));   // money reports: Admin and Manager only
   foreach ($cards as [$t,$label,$bg,$desc]): ?>
     <a href="<?= url('/reports/'.$t) ?>" class="card" style="text-decoration:none;color:inherit"><div class="card__body">
       <div class="stat__icon <?= $bg ?>"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h3v14h-3zm5.6 8H19v6h-3z"/></svg></div>

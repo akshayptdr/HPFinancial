@@ -18,10 +18,12 @@ $fb = $familyBox; $fam = $fb['family']; $ftype = $fb['type']; $fm = $fb['member'
         <div class="cell-sub">Pays</div>
         <div class="cell-strong"><?= !empty($fb['payer']) ? e($fb['payer']['name']) : '—' ?></div>
       </div>
+      <?php if (sees_money()): ?>
       <div>
         <div class="cell-sub">Group outstanding</div>
         <div class="cell-strong mono" style="color:<?= $fs['outstanding']>0?'var(--danger)':'var(--success)' ?>"><?= money($fs['outstanding']) ?></div>
       </div>
+      <?php endif; ?>
       <a class="btn btn--light btn--sm" href="<?= url('/families/'.$fam['id']) ?>">View group</a>
     </div>
   <?php else: ?>

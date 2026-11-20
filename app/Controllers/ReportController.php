@@ -19,8 +19,18 @@ class ReportController extends Controller
         ]));
     }
 
+    /** The fees and employee-performance reports carry money figures: Admin and Manager only. */
+    private function guardMoneyReport(string $type): void
+    {
+        if (in_array($type, ['fees', 'employees'], true) && !Auth::seesMoney()) {
+            \App\Core\Session::flash('error', 'You do not have access to that report.');
+            $this->redirect('/reports');
+        }
+    }
+
     public function show(string $type): void
     {
+        $this->guardMoneyReport($type);
         $f = Request::only(['financial_year','service','date_from','date_to']);
         $rows = []; $title = ucwords(str_replace('-', ' ', $type)); $cols = [];
         if ($type === 'fees') {
@@ -99,6 +109,7 @@ class ReportController extends Controller
 
     public function export(string $type): void
     {
+        $this->guardMoneyReport($type);
         // Reuse the same query logic as show()
         $f = Request::only(['financial_year','service','date_from','date_to']);
         $format = Request::input('format', 'csv'); // csv or excel

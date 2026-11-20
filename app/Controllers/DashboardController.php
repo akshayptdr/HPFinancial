@@ -31,8 +31,8 @@ class DashboardController extends Controller
              JOIN customers c ON c.id=l.customer_id
              WHERE l.entry_type='payment' AND " . sprintf($monthWhere, 'l.entry_date', 'l.entry_date')
             . ($isAdmin ? '' : " AND c.assigned_to=$uid"));
-        $stats['collected'] = $collectedJobs + $collectedLedger;
-        $stats['pending'] = \App\Models\Customer::outstandingTotal($isAdmin ? null : (int)$uid);
+        $stats['collected'] = Auth::seesMoney() ? $collectedJobs + $collectedLedger : 0;
+        $stats['pending'] = Auth::seesMoney() ? \App\Models\Customer::outstandingTotal($isAdmin ? null : (int)$uid) : 0;
 
         $leadStages = $isAdmin ? Lead::countByStatus() : ['new'=>0,'contacted'=>0,'qualified'=>0,'won'=>0,'lost'=>0];
 
