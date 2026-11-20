@@ -18,7 +18,7 @@ class DashboardController extends Controller
 
         $stats = [
             'leads'     => (int) Model::scalar("SELECT COUNT(*) FROM leads WHERE status IN ('new','contacted','qualified')" . ($isAdmin ? '' : " AND assigned_to=$uid")),   // open leads: not yet won or lost
-            'customers' => (int) Model::scalar("SELECT COUNT(*) FROM customers WHERE status='active'" . ($isAdmin ? '' : " AND assigned_to=$uid")),
+            'customers' => (int) Model::scalar("SELECT COUNT(*) FROM customers WHERE status='active'"),   // everyone sees the full customer list
         ];
         $monthWhere = "MONTH(%s)=MONTH(CURDATE()) AND YEAR(%s)=YEAR(CURDATE())";
         $collectedJobs = (float) Model::scalar(

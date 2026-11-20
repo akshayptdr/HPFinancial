@@ -12,7 +12,7 @@
      'label' => $isAdmin ? 'Open Leads' : 'My Open Leads',
      'svg' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><path d="M19 7.500v6M16 10.500h6"/>'],
     ['href' => '/customers',    'perm' => 'customers.view', 'tone' => 'bg-violet', 'val' => (int)$stats['customers'],
-     'label' => $isAdmin ? 'Active Customers' : 'My Customers',
+     'label' => 'Active Customers',
      'svg' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><circle cx="17.500" cy="9" r="2.500"/><path d="M17 14.200c2.600.3 4.500 2.200 4.500 5.300"/>'],
     ['href' => '/reports/fees', 'perm' => 'reports.view',   'tone' => 'bg-green',  'val' => inr_short($stats['collected']), 'mono' => true,
      'label' => 'Fees Collected (' . date('M') . ')',
